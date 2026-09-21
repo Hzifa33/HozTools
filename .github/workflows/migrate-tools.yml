@@ -58,6 +58,9 @@ jobs:
               text = re.sub(r'(["\'])/tools\1', r'\1/\1', text)
               if path.name == "sw.js":
                   text = text.replace("hoztools-v9-2", "hoztools-v9-3-domain")
+              if path.name == "index.html" and "navigator.serviceWorker.register" not in text:
+                  registration = "<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{}));}</script>"
+                  text = text.replace("</body>", registration + "</body>")
               if text != original:
                   path.write_text(text, encoding="utf-8", newline="")
           PY
