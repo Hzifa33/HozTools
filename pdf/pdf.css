@@ -1,0 +1,124 @@
+ 
+.pdf-tool .file-list{
+  display:grid!important;
+  gap:6px!important;
+  margin-top:10px!important;
+}
+.pdf-tool .file-item{
+  min-width:0;
+  min-height:42px;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 34px;
+  align-items:center;
+  gap:7px!important;
+  padding:5px 6px!important;
+  border:1px solid color-mix(in srgb,var(--border) 72%,transparent)!important;
+  border-radius:9px!important;
+  flex-wrap:nowrap!important;
+}
+.pdf-tool .file-item .file-badge,
+.pdf-tool .file-item .file-thumb{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  flex:none;
+  border:1px solid var(--border);
+  border-radius:7px;
+  background:var(--card);
+  object-fit:cover;
+  overflow:hidden;
+  font-size:.56rem;
+  font-weight:900;
+  line-height:1;
+}
+.pdf-tool .file-item .file-badge[data-kind="PDF"]{background:color-mix(in srgb,var(--neo-coral) 20%,var(--card))}
+.pdf-tool .file-item .file-badge[data-kind="DOCX"]{background:color-mix(in srgb,var(--neo-cyan) 20%,var(--card))}
+.pdf-tool .file-item .grow{min-width:0!important;display:flex!important;align-items:baseline!important;gap:7px!important;overflow:hidden}
+.pdf-tool .file-item .grow strong{
+  min-width:0;
+  display:block;
+  flex:1 1 auto;
+  font-size:.72rem!important;
+  font-weight:800;
+  line-height:1.2;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  overflow-wrap:normal!important;
+}
+.pdf-tool .file-item .grow small{
+  display:block!important;
+  flex:0 0 auto;
+  margin:0!important;
+  color:var(--muted);
+  font-size:.6rem!important;
+  white-space:nowrap;
+}
+.pdf-tool .file-item>.btn{
+  width:32px!important;
+  min-width:32px!important;
+  min-height:32px!important;
+  height:32px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:1rem!important;
+  line-height:1!important;
+  border-radius:7px!important;
+}
+.pdf-tool .word-selected{display:block;margin-top:4px;font-size:.68rem;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdf-tool #libStatus{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+
+@media(min-width:760px){
+  .pdf-tool .file-list:has(.file-item:nth-child(5)){grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .pdf-tool .file-item{grid-template-columns:30px minmax(0,1fr) 30px;gap:5px!important;padding:4px 5px!important;min-height:38px}
+  .pdf-tool .file-item .file-badge,.pdf-tool .file-item .file-thumb{width:28px;height:28px;border-radius:6px;font-size:.5rem}
+  .pdf-tool .file-item .grow{gap:5px!important}
+  .pdf-tool .file-item .grow strong{font-size:.66rem!important}
+  .pdf-tool .file-item .grow small{font-size:.55rem!important}
+  .pdf-tool .file-item>.btn{width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important}
+}
+
+ 
+.pdf-tool .task-view{display:grid;gap:10px}
+.pdf-tool .task-view[hidden]{display:none!important}
+.pdf-tool .task-view .mt{margin-top:0!important}
+.pdf-tool .task-view .fields{gap:9px}
+.pdf-tool .task-view .field{gap:5px}
+.pdf-tool .task-view .field>label{font-size:.78rem!important;line-height:1.35}
+.pdf-tool .task-view .input,.pdf-tool .task-view .select{min-height:42px!important;padding:8px 10px!important;font-size:.84rem}
+.pdf-tool .task-view .range{min-height:30px}
+.pdf-tool .micro-hint{margin:0;color:var(--muted);font-size:.7rem;line-height:1.45;font-weight:700}
+.pdf-tool .color-input{padding:4px!important;min-height:42px!important;cursor:pointer}
+.pdf-tool .color-input::-webkit-color-swatch-wrapper{padding:2px}
+.pdf-tool .color-input::-webkit-color-swatch{border:1px solid var(--border);border-radius:6px}
+.pdf-tool #pdfInfo.metric-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+.pdf-tool #pdfInfo .metric{min-height:58px!important;padding:8px 9px!important;display:flex;flex-direction:column;justify-content:center}
+.pdf-tool #pdfInfo .metric small{font-size:.63rem!important;line-height:1.25!important;min-height:0!important}
+.pdf-tool #pdfInfo .metric strong{font-size:.82rem!important;line-height:1.25!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+@media(max-width:640px){
+  .pdf-tool #pdfInfo.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+  .pdf-tool #pdfInfo .metric{min-height:48px!important;padding:6px 7px!important;border-radius:8px!important}
+  .pdf-tool #pdfInfo .metric small{font-size:.56rem!important}
+  .pdf-tool #pdfInfo .metric strong{font-size:.72rem!important}
+  .pdf-tool .task-view{gap:8px}
+  .pdf-tool .task-view .fields.two{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  .pdf-tool .task-view .field>label{font-size:.7rem!important}
+  .pdf-tool .task-view .input,.pdf-tool .task-view .select{min-height:39px!important;padding:6px 8px!important;font-size:.76rem}
+  .pdf-tool .task-view .btn{min-height:42px!important;font-size:.82rem!important}
+}
+@media(max-width:370px){
+  .pdf-tool .task-view .fields.two{grid-template-columns:1fr!important}
+}
+
+.pdf-tool .field.is-disabled{opacity:.5}
+.pdf-tool .field.is-disabled .range{cursor:not-allowed}
+@media(max-width:640px){
+  .pdf-tool #pdfInfo .metric{min-height:42px!important;padding:5px 6px!important}
+  .pdf-tool #pdfInfo .metric small{font-size:.53rem!important;line-height:1.15!important}
+  .pdf-tool #pdfInfo .metric strong{font-size:.68rem!important;line-height:1.15!important}
+}
