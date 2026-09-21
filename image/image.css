@@ -321,6 +321,21 @@ body.image-tool .site-footer {
   cursor: not-allowed !important;
 }
 
+/* Keep asynchronous export feedback accessible without making it a flex item
+   that can push the compact header controls out of place. */
+.studio-header .action-status {
+  position: fixed !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 /* 3. Main App Container & Dropzone */
 .studio-app {
   flex: 1 1 0%;
@@ -1061,19 +1076,35 @@ body.image-tool .mobile-dock {
   }
 
   .studio-header {
-    height: 44px;
+    height: 50px;
     padding: 0 6px;
     overflow: visible;
   }
 
-  .studio-header-inner,
+  .studio-header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+  }
+
   .sh-left,
   .sh-right {
-    gap: 4px;
+    gap: 3px;
   }
 
   .sh-left {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .sh-right {
+    justify-self: end;
     overflow: visible;
+  }
+
+  [dir="rtl"] .sh-right {
+    justify-self: start;
   }
 
   .sh-brand-title,
@@ -1087,20 +1118,55 @@ body.image-tool .mobile-dock {
   }
 
   .sh-btn {
-    height: 28px;
-    padding: 0 6px;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 7px;
     font-size: 0.75rem;
   }
 
   .sh-btn.icon-only {
-    width: 28px;
-    height: 28px;
-    padding: 0;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+  }
+
+  .sh-brand {
+    flex: 0 0 auto;
+  }
+
+  .sh-brand-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .sh-brand-mark img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .sh-back-btn,
+  #changeImage,
+  .sh-lang-btn,
+  .sh-theme-btn {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+
+  #changeImage {
+    flex: 0 0 34px;
+    overflow: hidden;
   }
 
   .sh-export-btn {
-    width: 32px !important;
-    height: 28px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 34px !important;
+    min-height: 34px !important;
     padding: 0 !important;
     justify-content: center !important;
   }
@@ -1632,31 +1698,38 @@ body.image-tool .mobile-dock {
   }
 
   .sh-brand-mark {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
   }
 
   .sh-brand-mark img {
-    width: 17px;
-    height: 17px;
+    width: 20px;
+    height: 20px;
   }
 
   .sh-btn,
   .sh-btn.icon-only,
   .sh-lang-btn,
   .sh-theme-btn {
-    width: 27px !important;
-    height: 27px !important;
-    min-height: 27px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
     padding: 0 !important;
     justify-content: center !important;
   }
 
   .sh-back-btn {
-    width: 27px;
-    height: 27px;
-    padding: 0;
-    justify-content: center;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+
+  #changeImage {
+    flex-basis: 32px;
   }
 
   .sh-history-group {
@@ -1664,8 +1737,10 @@ body.image-tool .mobile-dock {
   }
 
   .sh-export-btn {
-    width: 29px !important;
-    height: 27px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 32px !important;
+    min-height: 32px !important;
   }
 
   .studio-workbench {
@@ -1685,6 +1760,10 @@ body.image-tool .mobile-dock {
 @media (max-width: 340px) {
   .sh-back-btn {
     display: none;
+  }
+
+  .studio-header-inner {
+    gap: 3px;
   }
 
   .m-adjust-grid .m-input {
