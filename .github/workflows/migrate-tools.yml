@@ -1,0 +1,83 @@
+name: Migrate HozTools to root
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out target repository
+        uses: actions/checkout@v4
+
+      - name: Check out source repository
+        uses: actions/checkout@v4
+        with:
+          repository: Hzifa33/Hzifa33.github.io
+          ref: main
+          path: source-site
+
+      - name: Copy tools and update paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          rsync -a source-site/tools/ ./
+          rm -rf source-site
+          printf '%s\n' 'tools.hzifa33.com' > CNAME
+
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          excluded = {".git", ".github"}
+          for path in Path(".").rglob("*"):
+              if not path.is_file() or any(part in excluded for part in path.parts):
+                  continue
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+
+              original = text
+              text = re.sub(
+                  r"https://(?:www\.)?hzifa33\.com/tools(?=/|[\"'?#\s<)]|$)",
+                  "https://tools.hzifa33.com",
+                  text,
+                  flags=re.IGNORECASE,
+              )
+              text = re.sub(
+                  r"https://hzifa33\.github\.io/tools(?=/|[\"'?#\s<)]|$)",
+                  "https://tools.hzifa33.com",
+                  text,
+                  flags=re.IGNORECASE,
+              )
+              text = text.replace("/tools/", "/")
+              text = re.sub(r'(["\'])/tools\1', r'\1/\1', text)
+              if path.name == "sw.js":
+                  text = text.replace("hoztools-v9-2", "hoztools-v9-3-domain")
+              if text != original:
+                  path.write_text(text, encoding="utf-8", newline="")
+          PY
+
+          python3 -m json.tool manifest.webmanifest >/dev/null
+          test -f index.html
+          test -f sw.js
+          test -f offline.html
+
+          if grep -RInE --exclude-dir=.git --exclude-dir=.github \
+            'hzifa33(\.github\.io|\.com)/tools|/tools/' .; then
+            echo "Legacy /tools paths remain" >&2
+            exit 1
+          fi
+
+      - name: Commit migrated site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Migrate HozTools to tools.hzifa33.com"
+          git push
