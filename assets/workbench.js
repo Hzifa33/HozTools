@@ -1,11 +1,5 @@
 (function(){'use strict';
-// Both published entry points: hzifa33.com/ and tools.hzifa33.com/.
-const isToolsHost=location.hostname.toLowerCase()==='tools.hzifa33.com';
-const pagePath=location.pathname.replace(/\/index\.html$/i,'/').replace(/\/+$/,'')||'/';
-const isToolsLanding=['/','/ar','/es'].includes(pagePath)||(isToolsHost&&['/','/ar','/es'].includes(pagePath));
-const installIconUrl=new URL('app-site-192.png',document.currentScript?.src||location.href).href;
-let installEvent;
-if(isToolsLanding)window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;document.dispatchEvent(new Event('hoz:install-ready'))});
+let installEvent;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;document.dispatchEvent(new Event('hoz:install-ready'))});
 document.addEventListener('DOMContentLoaded',()=>{
 const H=HozTools,$=H.$,$$=H.$$,t=H.tr;
 const catalog=[['image','Image Lab','معمل الصور','Imágenes'],['pdf','PDF Lab','معمل PDF','PDF'],['qr','QR Studio','استوديو QR','Códigos QR'],['whatsapp','WhatsApp','واتساب','WhatsApp'],['split-bill','Split Bill','تقسيم الفاتورة','Dividir cuenta'],['text','Text Lab','معمل النصوص','Textos'],['calculators','Calculators','الحاسبات','Calculadoras'],['password','Passwords','كلمات المرور','Contraseñas']];
@@ -26,27 +20,11 @@ const wrapper=document.createElement('article');wrapper.className=card.className
 function update(){const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f\u064b-\u065f]/g,'').toLowerCase(),terms=norm(input.value.trim()).split(/\s+/).filter(Boolean);let n=0;cards.forEach(card=>{const key=card.dataset.tool,wrap=card.parentElement,hay=norm([card.textContent,card.dataset.keywords,...$$('[data-en]',card).flatMap(x=>[x.dataset.en,x.dataset.ar,x.dataset.es])].join(' ')),group=filter==='all'||filter==='pinned'&&pins.includes(key)||filter==='files'&&['image','pdf','qr'].includes(key)||filter==='daily'&&!['image','pdf','qr'].includes(key);card.hidden=false;wrap.hidden=!(group&&terms.every(q=>hay.includes(q)));if(!wrap.hidden)n++;const b=$('.pin-button',wrap);b.setAttribute('aria-pressed',String(pins.includes(key)));b.setAttribute('aria-label',(pins.includes(key)?t('Unpin','إزالة من المفضلة','Quitar de favoritas'):t('Pin','إضافة للمفضلة','Añadir a favoritas'))+' · '+name(catalog.find(x=>x[0]===key)))});$$('button',filters).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===filter)));count.textContent=t(`${n} tools · pin your favourites`,`${n} أدوات · ثبّت أدواتك المفضلة`,`${n} herramientas · guarda tus favoritas`);$('#emptyState').classList.toggle('show',n===0);recentBox.replaceChildren();recentBox.hidden=!!input.value||filter!=='all'||!recent.length;if(!recentBox.hidden){const label=document.createElement('span');label.textContent=t('Recent','مؤخرًا','Recientes');recentBox.append(label);recent.forEach(key=>{const a=document.createElement('a');a.href=key+'/';a.textContent=name(catalog.find(x=>x[0]===key));recentBox.append(a)})}}
 input.addEventListener('input',update);document.addEventListener('hoz:language',update);document.addEventListener('keydown',e=>{if(e.key==='/'&&!e.ctrlKey&&!e.metaKey&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)&&!e.target.isContentEditable){e.preventDefault();input.focus()}if(e.key==='Escape'&&document.activeElement===input){input.value='';update()}});update();
 }
-// The install card is exclusive to the tools landing page (including its language editions).
-if(home&&isToolsLanding){
- const strip=document.createElement('section');strip.className='install-strip';strip.hidden=true;
- strip.setAttribute('aria-label',t('Install HozTools','تثبيت HozTools','Instalar HozTools'));
- strip.innerHTML=`<div class="shell install-inner"><span class="install-icon" aria-hidden="true"><img src="${installIconUrl}" alt="" loading="lazy"></span><div class="install-copy"><span class="install-eyebrow" data-en="YOUR TOOLS, ONE TAP AWAY" data-ar="أدواتك، على بُعد لمسة" data-es="TUS HERRAMIENTAS A UN TOQUE">YOUR TOOLS, ONE TAP AWAY</span><strong data-en="Install HozTools on your device" data-ar="ثبّت HozTools على جهازك" data-es="Instala HozTools en tu dispositivo">Install HozTools on your device</strong><p data-en="Open your favorite tools straight from your home screen." data-ar="افتح أدواتك المفضلة مباشرة من شاشة هاتفك الرئيسية." data-es="Abre tus herramientas favoritas desde la pantalla de inicio.">Open your favorite tools straight from your home screen.</p><p class="install-tip" role="status" hidden></p></div><button class="install-action" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 17v3h14v-3"/></svg><span data-en="Install app" data-ar="تثبيت التطبيق" data-es="Instalar app">Install app</span></button><button class="dismiss-install" type="button" aria-label="${t('Dismiss install invitation','إغلاق دعوة التثبيت','Cerrar invitación')}" title="${t('Not now','ليس الآن','Ahora no')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>`;
- const anchor=$('.topbar');if(anchor)anchor.after(strip);
- const installed=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
- const tip=$('.install-tip',strip);
- // A prior dismissal must not hide the invitation for an entire week.
- // Show every browser visit, unless dismissed on this page or already running as an installed app.
- let dismissedThisPage=false;
- function showInstall(){strip.hidden=installed()||dismissedThisPage}
- $('.dismiss-install',strip).onclick=()=>{dismissedThisPage=true;strip.hidden=true};
- $('.install-action',strip).onclick=async()=>{
-   if(installEvent){const event=installEvent;installEvent=null;try{await event.prompt();const choice=await event.userChoice;if(choice?.outcome==='accepted'){strip.hidden=true;return}}catch{} }
-   tip.hidden=false;
-   tip.textContent=/iPad|iPhone|iPod/.test(navigator.userAgent)?t('In Safari: Share → Add to Home Screen.','في سفاري: مشاركة ← إضافة إلى الشاشة الرئيسية.','En Safari: Compartir → Añadir a pantalla de inicio.'):t('In your browser menu (⋮), choose “Install app” or “Add to Home screen”.','من قائمة المتصفح (⋮)، اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».','En el menú del navegador (⋮), elige «Instalar app» o «Añadir a pantalla de inicio».');
- };
- document.addEventListener('hoz:install-ready',showInstall);
- window.addEventListener('appinstalled',()=>{installEvent=null;strip.hidden=true});showInstall();
-}
-if('serviceWorker' in navigator&&window.isSecureContext)navigator.serviceWorker.register(isToolsHost?'/sw.js':'/sw.js',{scope:isToolsHost?'/':'/'}).catch(()=>{});
+const strip=document.createElement('section');strip.className='install-strip';strip.hidden=true;strip.innerHTML='<div class="shell"><p data-en="Your everyday tools, one tap away." data-ar="أدواتك اليومية، بلمسة واحدة." data-es="Tus herramientas, a un toque."></p><button class="install-action" data-en="Install app" data-ar="تثبيت التطبيق" data-es="Instalar"></button><button class="dismiss-install" aria-label="Close">×</button></div>';$('.topbar')?.before(strip);
+const installed=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+function showInstall(){strip.hidden=!installEvent||installed()||Date.now()-Number(H.storage.get('hoz:install-dismiss')||0)<7*864e5}
+$('.dismiss-install',strip).onclick=()=>{H.storage.set('hoz:install-dismiss',String(Date.now()));strip.hidden=true};$('.install-action',strip).onclick=async()=>{if(!installEvent)return;const event=installEvent;installEvent=null;strip.hidden=true;try{await event.prompt();await event.userChoice}catch{H.toast(t('Use Chrome’s menu to install.','استخدم قائمة Chrome للتثبيت.','Instala desde el menú de Chrome.'))}};
+document.addEventListener('hoz:install-ready',showInstall);window.addEventListener('appinstalled',()=>{installEvent=null;strip.hidden=true});showInstall();
+if('serviceWorker' in navigator&&window.isSecureContext)navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});
 const offline=document.createElement('p');offline.className='offline-hint';offline.setAttribute('role','status');$('.topbar')?.after(offline);function connection(){offline.hidden=navigator.onLine;offline.textContent=t('Offline · Previously loaded tools may still work.','أنت غير متصل · قد تعمل الأدوات التي فتحتها سابقًا.','Sin conexión · Las herramientas cargadas pueden seguir funcionando.')}window.addEventListener('online',connection);window.addEventListener('offline',connection);document.addEventListener('hoz:language',connection);connection();H.applyLang(H.lang());
 });})();

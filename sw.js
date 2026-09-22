@@ -1,4 +1,4 @@
-const CACHE='hoztools-v9-3',PREFIX='hoztools-',OFFLINE='/offline.html';
+const CACHE='hoztools-v9-3-domain',PREFIX='hoztools-',OFFLINE='/offline.html';
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll([OFFLINE]))));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith(PREFIX)&&k!==CACHE).map(k=>caches.delete(k))))));
 self.addEventListener('fetch',event=>{

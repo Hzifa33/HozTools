@@ -8,25 +8,6 @@
   let selectionUI = { show(){}, hide(){}, refresh(){}, afterCanvasChange(){} };
   let liveUI = { refresh(){}, announce(){} };
   let loadVersion = 0;
-  let hasSelection = false;
-  const geometry = window.HozCropGeometry;
-
-  function syncActionBar(){
-    const bar = $('.mobile-action-bar');
-    const resizing = currentTool === 'resize' && (+$('#mWidth').value !== canvas.width || +$('#mHeight').value !== canvas.height);
-    const needed = !!original && (resizing || (hasSelection && ['crop','presets'].includes(currentTool)));
-    if(bar) bar.hidden = !needed;
-    if($('#mobileApplyBtn')) $('#mobileApplyBtn').disabled = !needed;
-  }
-
-  function selectionRatio(){
-    if(currentTool === 'privacy') return 0;
-    const key = currentTool === 'presets' ? $('#preset').value : currentRatio;
-    if(key === 'original') return canvas.width / canvas.height;
-    if(!key || key === 'free') return 0;
-    const [w,h] = key.split(':').map(Number);
-    return w > 0 && h > 0 ? w/h : 0;
-  }
 
   function t(en, ar, es){
     return { en, ar, es }[H.lang()] || en;
@@ -107,7 +88,6 @@
     $('#height').value = canvas.height;
     if($('#mWidth')) $('#mWidth').value = canvas.width;
     if($('#mHeight')) $('#mHeight').value = canvas.height;
-    syncActionBar();
   }
 
   function syncCrop(){
@@ -504,11 +484,9 @@
   function presetSelection(){
     const val = $('#preset').value;
     if(!val){ selectionUI.hide(); return; }
-    selecting = true;
-    canvas.parentElement?.classList.add('selecting');
     const [a, b] = val.split(':').map(Number), target = a / b;
-    const box = geometry.center(canvas.width,canvas.height,target);
-    const w = Math.round(box.w), h = Math.round(box.h);
+    let w = canvas.width, h = Math.round(w / target);
+    if(h > canvas.height){ h = canvas.height; w = Math.round(h * target); }
     $('#cropW').value = w;
     $('#cropH').value = h;
     $('#cropX').value = Math.round((canvas.width - w) / 2);
@@ -518,8 +496,9 @@
   }
 
   function applyPresetCrop(){
-    if(!$('#preset').value || !hasSelection) return;
+    if(!$('#preset').value) return;
     crop();
+    H.toast(t('Preset crop applied.', 'تم تطبيق المقاس الجاهز بنجاح.', 'Recorte predefinido aplicado.'));
   }
 
   async function favicon(){
@@ -645,17 +624,14 @@
     }
 
     // 5. Selection overlay (crop & privacy)
-    selecting = (toolName === 'crop' || toolName === 'privacy' || (toolName === 'presets' && !!$('#preset').value));
+    selecting = (toolName === 'crop' || toolName === 'privacy');
     canvas.parentElement?.classList.toggle('selecting', selecting);
-    if(toolName === 'presets' && selecting){
-      presetSelection();
-    } else if(selecting){
+    if(selecting){
       selectionUI.show();
       selectionUI.refresh();
     } else {
       selectionUI.hide();
     }
-    syncActionBar();
   }
 
   // Zoom Handling — zoom is relative to the fitted canvas, never raw megapixels.
@@ -674,21 +650,20 @@
     if(!canvas.width) return;
     const stage = $('#studioStage');
     if(isFit){
-      const scale = stageFitScale();
-      canvas.style.setProperty('width', `${Math.max(1, Math.floor(canvas.width * scale))}px`, 'important');
-      canvas.style.setProperty('height', `${Math.max(1, Math.floor(canvas.height * scale))}px`, 'important');
-      canvas.style.setProperty('max-width', 'none', 'important');
-      canvas.style.setProperty('max-height', 'none', 'important');
+      canvas.style.maxWidth = '100%';
+      canvas.style.maxHeight = '100%';
+      canvas.style.width = 'auto';
+      canvas.style.height = 'auto';
       stage?.classList.remove('is-zoomed');
       $('#zoomFitBtn')?.classList.add('active');
     } else {
       const scale = stageFitScale() * currentZoom;
       const renderedWidth = Math.max(1, Math.round(canvas.width * scale));
       const renderedHeight = Math.max(1, Math.round(canvas.height * scale));
-      canvas.style.setProperty('max-width', 'none', 'important');
-      canvas.style.setProperty('max-height', 'none', 'important');
-      canvas.style.setProperty('width', `${renderedWidth}px`, 'important');
-      canvas.style.setProperty('height', `${renderedHeight}px`, 'important');
+      canvas.style.maxWidth = 'none';
+      canvas.style.maxHeight = 'none';
+      canvas.style.width = `${renderedWidth}px`;
+      canvas.style.height = `${renderedHeight}px`;
       const overflows = !!stage && (renderedWidth > stage.clientWidth - 8 || renderedHeight > stage.clientHeight - 8);
       stage?.classList.toggle('is-zoomed', overflows);
       $('#zoomFitBtn')?.classList.remove('active');
@@ -863,11 +838,9 @@
   };
 
   $('#mobileCancelBtn').onclick = () => {
-    if(currentTool === 'resize') syncDims();
+    setTool('crop');
     selectionUI.hide();
   };
-
-  ['width','height','mWidth','mHeight'].forEach(id => $('#' + id)?.addEventListener('input', syncActionBar));
 
   // Desktop Drawer collapse/expand button
   $('#drawerToggleBtn').onclick = () => {
@@ -943,9 +916,7 @@
       '<span class="crop-handle" data-handle="se"></span>' +
       '<span class="crop-handle" data-handle="s"></span>' +
       '<span class="crop-handle" data-handle="sw"></span>' +
-      '<span class="crop-handle" data-handle="w"></span><span class="crop-size" aria-hidden="true"></span>';
-    rect.tabIndex = 0;
-    rect.setAttribute('aria-label', t('Crop selection. Arrow keys move; Shift moves faster. Escape clears.', 'تحديد القص. الأسهم للتحريك وShift للتحريك أسرع وEscape للإلغاء.', 'Selección. Flechas para mover, Mayús para acelerar y Escape para borrar.'));
+      '<span class="crop-handle" data-handle="w"></span>';
     parent.append(rect);
 
     const dismiss = $('.crop-dismiss', rect);
@@ -973,28 +944,21 @@
     function overlay(){
       if(!canvas.width) return;
       const s = selection();
-      const c = canvas.getBoundingClientRect(), p = parent.getBoundingClientRect();
-      rect.style.left = `${c.left - p.left - parent.clientLeft + s.x / canvas.width * c.width}px`;
-      rect.style.top = `${c.top - p.top - parent.clientTop + s.y / canvas.height * c.height}px`;
-      rect.style.width = `${s.w / canvas.width * c.width}px`;
-      rect.style.height = `${s.h / canvas.height * c.height}px`;
-      $('.crop-size',rect).textContent = `${s.w} × ${s.h}`;
-      rect.dataset.compact = String(s.w / canvas.width * c.width < 90 || s.h / canvas.height * c.height < 70);
+      rect.style.left = `${s.x / canvas.width * 100}%`;
+      rect.style.top = `${s.y / canvas.height * 100}%`;
+      rect.style.width = `${s.w / canvas.width * 100}%`;
+      rect.style.height = `${s.h / canvas.height * 100}%`;
     }
 
     function showSelection(){
       selectionVisible = true;
       if(selecting) rect.hidden = false;
-      hasSelection = selecting;
-      syncActionBar();
       overlay();
     }
 
     function hideSelection(){
       selectionVisible = false;
       rect.hidden = true;
-      hasSelection = false;
-      syncActionBar();
       drawStart = null;
       drag = null;
       stopLiveEffect();
@@ -1014,8 +978,6 @@
       drawStart = coord(e);
       selectionVisible = true;
       rect.hidden = false;
-      hasSelection = true;
-      syncActionBar();
       writeSelection({ x: Math.min(drawStart.x, canvas.width - 1), y: Math.min(drawStart.y, canvas.height - 1), w: 1, h: 1 });
       overlay();
       canvas.setPointerCapture?.(e.pointerId);
@@ -1024,7 +986,9 @@
     canvas.onpointermove = e => {
       if(!drawStart) return;
       const p = coord(e), x1 = clamp(drawStart.x, 0, canvas.width - 1), y1 = clamp(drawStart.y, 0, canvas.height - 1);
-      writeSelection(geometry.draw({x:x1,y:y1},p,canvas.width,canvas.height,selectionRatio()));
+      const x2 = clamp(p.x, 0, canvas.width), y2 = clamp(p.y, 0, canvas.height);
+      const left = Math.min(x1, x2), top = Math.min(y1, y2), right = Math.max(x1 + 1, x2), bottom = Math.max(y1 + 1, y2);
+      writeSelection({ x: left, y: top, w: right - left, h: bottom - top });
       overlay();
     };
 
@@ -1056,34 +1020,16 @@
         overlay();
         return;
       }
-      writeSelection(geometry.resize(s,handle,dx,dy,canvas.width,canvas.height,selectionRatio()));
+      let left = s.x, top = s.y, right = s.x + s.w, bottom = s.y + s.h;
+      if(handle.includes('w')) left = clamp(s.x + dx, 0, right - 1);
+      if(handle.includes('e')) right = clamp(s.x + s.w + dx, left + 1, canvas.width);
+      if(handle.includes('n')) top = clamp(s.y + dy, 0, bottom - 1);
+      if(handle.includes('s')) bottom = clamp(s.y + s.h + dy, top + 1, canvas.height);
+      writeSelection({ x: left, y: top, w: right - left, h: bottom - top });
       overlay();
     };
 
     rect.onpointerup = rect.onpointercancel = () => { drag = null; };
-    rect.onkeydown = e => {
-      if(e.key === 'Escape'){hideSelection();return;}
-      const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
-      if(!moves[e.key]) return;
-      e.preventDefault();
-      const [x,y]=moves[e.key],step=e.shiftKey?10:1;
-      stopLiveEffect();
-      writeSelection(geometry.resize(selection(),'move',x*step,y*step,canvas.width,canvas.height));
-      overlay();
-    };
-
-    if('ResizeObserver' in window) new ResizeObserver(() => requestAnimationFrame(updateZoomDisplay)).observe($('#studioStage'));
-    function fitViewport(){
-      const viewport = window.visualViewport;
-      document.body.style.setProperty('--studio-viewport-height', `${viewport ? viewport.height : window.innerHeight}px`);
-      document.body.style.setProperty('--studio-viewport-top', `${viewport ? viewport.offsetTop : 0}px`);
-      requestAnimationFrame(updateZoomDisplay);
-    }
-    window.visualViewport?.addEventListener('resize',fitViewport,{passive:true});
-    window.visualViewport?.addEventListener('scroll',fitViewport,{passive:true});
-    window.addEventListener('resize',fitViewport,{passive:true});
-    fitViewport();
-    syncActionBar();
 
     ['cropX', 'cropY', 'cropW', 'cropH'].forEach(id => {
       $('#' + id).addEventListener('input', () => {

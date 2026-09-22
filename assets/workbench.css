@@ -40,25 +40,3 @@ body{display:flex;flex-direction:column;min-height:100dvh}.page{flex:1;padding-b
  .panel-head>.muted{max-width:100%;white-space:normal;overflow:visible;text-overflow:clip}
  .fields.two,.fields.three{grid-template-columns:minmax(0,1fr)}
 }
-
-
-/* Install invitation: displayed only on the three tools landing-page editions. */
-.install-strip{--install-ink:#192334;position:relative;z-index:1;margin:14px auto 0;width:min(1180px,calc(100% - 36px));border:2px solid var(--install-ink);border-radius:19px;background:linear-gradient(115deg,#fffdf5 0%,#fffaf0 68%,#dff9fb 100%);color:var(--install-ink);box-shadow:4px 4px 0 var(--install-ink);overflow:hidden}
-.install-strip[hidden],.install-tip[hidden]{display:none!important}
-.install-strip .install-inner{display:flex;align-items:center;gap:15px;min-height:90px;padding:15px 18px;width:100%;max-width:none;box-sizing:border-box}
-.install-strip .install-icon{flex:0 0 52px;width:52px;height:52px;display:grid;place-items:center;border:1.5px solid var(--install-ink);border-radius:14px;background:#fff;box-shadow:2px 2px 0 var(--install-ink)}
-.install-strip .install-icon img{width:39px;height:39px;object-fit:contain;border-radius:9px}
-.install-strip .install-copy{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
-.install-strip .install-eyebrow{font-weight:900;letter-spacing:.065em;font-size:.62rem;color:#385e74;line-height:1.4}
-.install-strip .install-copy strong{font-size:clamp(.98rem,1.7vw,1.16rem);font-weight:900;line-height:1.32}
-.install-strip .install-copy p{font-size:.79rem;font-weight:500;line-height:1.45;color:#475569;margin:0;max-width:55ch}
-.install-strip .install-copy .install-tip{font-size:.75rem;font-weight:750;color:#172c47;margin-top:5px}
-.install-strip button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;font:inherit;font-weight:900;border:1.8px solid var(--install-ink);cursor:pointer;min-height:43px}
-.install-strip .install-action{border-radius:11px;padding:10px 15px;background:#f8e35c;color:var(--install-ink);box-shadow:2px 2px 0 var(--install-ink);font-size:.82rem;white-space:nowrap;transition:transform .16s,box-shadow .16s}
-.install-strip .install-action:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--install-ink)}
-.install-strip .install-action:active{transform:translate(2px,2px);box-shadow:none}
-.install-strip .dismiss-install{align-self:flex-start;min-height:31px;width:31px;padding:5px;border:0;background:transparent;color:#536579;border-radius:9px;box-shadow:none}
-.install-strip .dismiss-install:hover{background:#e8eef2;color:#192334}
-.install-strip button:focus-visible{outline:3px solid #597dde;outline-offset:3px}
-@media(max-width:640px){.install-strip{width:calc(100% - 28px);margin:12px auto 0;border-radius:15px;box-shadow:3px 3px 0 var(--install-ink)}.install-strip .install-inner{padding:13px;gap:11px;min-height:80px;flex-wrap:wrap}.install-strip .install-icon{width:43px;height:43px;flex-basis:43px;border-radius:11px}.install-strip .install-icon img{width:34px;height:34px}.install-strip .install-copy{flex:1 1 60%;gap:2px}.install-strip .install-eyebrow{font-size:.55rem}.install-strip .install-copy strong{font-size:.95rem}.install-strip .install-copy p{font-size:.71rem}.install-strip .dismiss-install{order:2;width:27px;min-height:27px;margin-inline-start:auto}.install-strip .install-action{order:3;flex:0 0 100%;width:100%;min-height:42px;font-size:.8rem;padding:8px 12px;box-shadow:2px 2px 0 var(--install-ink)}}
-@media(prefers-reduced-motion:reduce){.install-strip .install-action{transition:none}}
