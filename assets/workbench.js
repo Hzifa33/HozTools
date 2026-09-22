@@ -1,5 +1,10 @@
 (function(){'use strict';
-const isToolsLanding=/^\/tools\/(?:ar\/|es\/)?(?:index\.html)?$/.test(location.pathname);let installEvent;
+// Both published entry points: hzifa33.com/ and tools.hzifa33.com/.
+const isToolsHost=location.hostname.toLowerCase()==='tools.hzifa33.com';
+const pagePath=location.pathname.replace(/\/index\.html$/i,'/').replace(/\/+$/,'')||'/';
+const isToolsLanding=['/','/ar','/es'].includes(pagePath)||(isToolsHost&&['/','/ar','/es'].includes(pagePath));
+const installIconUrl=new URL('app-site-192.png',document.currentScript?.src||location.href).href;
+let installEvent;
 if(isToolsLanding)window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;document.dispatchEvent(new Event('hoz:install-ready'))});
 document.addEventListener('DOMContentLoaded',()=>{
 const H=HozTools,$=H.$,$$=H.$$,t=H.tr;
@@ -25,12 +30,15 @@ input.addEventListener('input',update);document.addEventListener('hoz:language',
 if(home&&isToolsLanding){
  const strip=document.createElement('section');strip.className='install-strip';strip.hidden=true;
  strip.setAttribute('aria-label',t('Install HozTools','تثبيت HozTools','Instalar HozTools'));
- strip.innerHTML=`<div class="shell install-inner"><span class="install-icon" aria-hidden="true"><img src="/assets/app-site-192.png" alt="" loading="lazy"></span><div class="install-copy"><span class="install-eyebrow" data-en="YOUR TOOLS, ONE TAP AWAY" data-ar="أدواتك، على بُعد لمسة" data-es="TUS HERRAMIENTAS A UN TOQUE">YOUR TOOLS, ONE TAP AWAY</span><strong data-en="Take HozTools with you" data-ar="خلّي HozTools معك دائمًا" data-es="Lleva HozTools contigo">Take HozTools with you</strong><p data-en="Open your favorite tools straight from your home screen." data-ar="افتح أدواتك المفضلة مباشرة من شاشة هاتفك الرئيسية." data-es="Abre tus herramientas favoritas desde la pantalla de inicio.">Open your favorite tools straight from your home screen.</p><p class="install-tip" role="status" hidden></p></div><button class="install-action" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 17v3h14v-3"/></svg><span data-en="Install app" data-ar="تثبيت التطبيق" data-es="Instalar app">Install app</span></button><button class="dismiss-install" type="button" aria-label="${t('Dismiss install invitation','إغلاق دعوة التثبيت','Cerrar invitación')}" title="${t('Not now','ليس الآن','Ahora no')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>`;
+ strip.innerHTML=`<div class="shell install-inner"><span class="install-icon" aria-hidden="true"><img src="${installIconUrl}" alt="" loading="lazy"></span><div class="install-copy"><span class="install-eyebrow" data-en="YOUR TOOLS, ONE TAP AWAY" data-ar="أدواتك، على بُعد لمسة" data-es="TUS HERRAMIENTAS A UN TOQUE">YOUR TOOLS, ONE TAP AWAY</span><strong data-en="Install HozTools on your device" data-ar="ثبّت HozTools على جهازك" data-es="Instala HozTools en tu dispositivo">Install HozTools on your device</strong><p data-en="Open your favorite tools straight from your home screen." data-ar="افتح أدواتك المفضلة مباشرة من شاشة هاتفك الرئيسية." data-es="Abre tus herramientas favoritas desde la pantalla de inicio.">Open your favorite tools straight from your home screen.</p><p class="install-tip" role="status" hidden></p></div><button class="install-action" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 17v3h14v-3"/></svg><span data-en="Install app" data-ar="تثبيت التطبيق" data-es="Instalar app">Install app</span></button><button class="dismiss-install" type="button" aria-label="${t('Dismiss install invitation','إغلاق دعوة التثبيت','Cerrar invitación')}" title="${t('Not now','ليس الآن','Ahora no')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>`;
  const anchor=$('.topbar');if(anchor)anchor.after(strip);
  const installed=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
  const tip=$('.install-tip',strip);
- function showInstall(){strip.hidden=installed()||Date.now()-Number(H.storage.get('hoz:install-dismiss-v2')||0)<7*864e5}
- $('.dismiss-install',strip).onclick=()=>{H.storage.set('hoz:install-dismiss-v2',String(Date.now()));strip.hidden=true};
+ // A prior dismissal must not hide the invitation for an entire week.
+ // Show every browser visit, unless dismissed on this page or already running as an installed app.
+ let dismissedThisPage=false;
+ function showInstall(){strip.hidden=installed()||dismissedThisPage}
+ $('.dismiss-install',strip).onclick=()=>{dismissedThisPage=true;strip.hidden=true};
  $('.install-action',strip).onclick=async()=>{
    if(installEvent){const event=installEvent;installEvent=null;try{await event.prompt();const choice=await event.userChoice;if(choice?.outcome==='accepted'){strip.hidden=true;return}}catch{} }
    tip.hidden=false;
@@ -39,6 +47,6 @@ if(home&&isToolsLanding){
  document.addEventListener('hoz:install-ready',showInstall);
  window.addEventListener('appinstalled',()=>{installEvent=null;strip.hidden=true});showInstall();
 }
-if('serviceWorker' in navigator&&window.isSecureContext)navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});
+if('serviceWorker' in navigator&&window.isSecureContext)navigator.serviceWorker.register(isToolsHost?'/sw.js':'/sw.js',{scope:isToolsHost?'/':'/'}).catch(()=>{});
 const offline=document.createElement('p');offline.className='offline-hint';offline.setAttribute('role','status');$('.topbar')?.after(offline);function connection(){offline.hidden=navigator.onLine;offline.textContent=t('Offline · Previously loaded tools may still work.','أنت غير متصل · قد تعمل الأدوات التي فتحتها سابقًا.','Sin conexión · Las herramientas cargadas pueden seguir funcionando.')}window.addEventListener('online',connection);window.addEventListener('offline',connection);document.addEventListener('hoz:language',connection);connection();H.applyLang(H.lang());
 });})();
