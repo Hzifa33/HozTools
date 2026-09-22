@@ -1,0 +1,45 @@
+/* Image Lab owns its viewport; only the image or settings may scroll. */
+html:has(body.image-tool){height:100%;min-height:0 !important;overflow:hidden !important;overscroll-behavior:none}
+body.image-tool{position:fixed !important;inset:var(--studio-viewport-top,0px) 0 auto !important;width:100% !important;height:var(--studio-viewport-height,100dvh) !important;min-height:0 !important;max-height:none !important;margin:0 !important;padding:0 !important;display:flex !important;flex-direction:column !important;overflow:hidden !important}
+body.image-tool #studioHeader{position:relative !important;inset:auto !important;flex:0 0 50px !important;height:50px !important;min-height:50px !important;border-radius:0 0 14px 14px !important;z-index:100}
+body.image-tool #main.studio-app{flex:1 1 0 !important;height:auto !important;min-height:0 !important;max-height:none !important;padding:0 !important;margin:0 !important;overflow:hidden !important}
+body.image-tool #editor.studio-workbench{height:auto !important;min-height:0 !important;flex:1 1 0 !important;overflow:hidden !important}
+body.image-tool #editor.hidden,body.image-tool #editor[hidden]{display:none !important}
+body.image-tool #editor .studio-body{min-height:0 !important;overflow:hidden !important;padding:0 !important}
+body.image-tool #studioStage{min-height:0 !important;min-width:0 !important;overflow:hidden !important;padding:18px !important;container-type:normal !important}
+body.image-tool #studioStage.is-zoomed{overflow:auto !important}
+body.image-tool #studioStage .preview-box{flex:0 0 auto !important;min-height:0 !important;max-height:none !important;max-width:none !important;border:0 !important;border-radius:0 !important;overflow:visible !important;box-shadow:none !important}
+body.image-tool #canvas{border-radius:0 !important;touch-action:none}
+body.image-tool #editor .mobile-action-bar[hidden]{display:none !important}
+/* Keep completion announcements available to assistive technology, out of the row. */
+body.image-tool .action-status{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;clip-path:inset(50%) !important;white-space:nowrap !important;border:0 !important}
+body.image-tool .crop-overlay{box-sizing:border-box;border:2px solid #fff !important;outline:1px solid #172033 !important;background:transparent !important;box-shadow:0 0 0 9999px #10182755 !important;touch-action:none}
+body.image-tool .crop-overlay::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,transparent calc(33.333% - .5px),#ffffff88 33.333%,transparent calc(33.333% + .5px),transparent calc(66.666% - .5px),#ffffff88 66.666%,transparent calc(66.666% + .5px)),linear-gradient(to bottom,transparent calc(33.333% - .5px),#ffffff88 33.333%,transparent calc(33.333% + .5px),transparent calc(66.666% - .5px),#ffffff88 66.666%,transparent calc(66.666% + .5px))}
+body.image-tool .crop-handle{width:18px !important;height:18px !important;border-radius:5px !important;border:2px solid #172033 !important;background:#8bdced !important;z-index:6}
+body.image-tool .crop-handle::before{content:"";position:absolute;inset:-8px}
+body.image-tool .crop-handle[data-handle="nw"]{left:-9px;top:-9px}
+body.image-tool .crop-handle[data-handle="ne"]{right:-9px;top:-9px}
+body.image-tool .crop-handle[data-handle="sw"]{left:-9px;bottom:-9px}
+body.image-tool .crop-handle[data-handle="se"]{right:-9px;bottom:-9px}
+body.image-tool .crop-handle:is([data-handle="n"],[data-handle="s"]){width:30px !important;height:10px !important}
+body.image-tool .crop-handle:is([data-handle="e"],[data-handle="w"]){width:10px !important;height:30px !important}
+body.image-tool .crop-dismiss{top:8px !important;right:8px !important;left:auto !important;transform:none !important;width:26px !important;height:26px !important;min-height:26px !important;font-size:20px !important;border-radius:50% !important;box-shadow:none !important;background:#172033 !important;color:#fff !important;border:1px solid #fff !important}
+body.image-tool .crop-size{position:absolute;bottom:7px;left:7px;padding:4px 6px;border-radius:5px;background:#172033dd;color:#fff;font:600 10px/1.2 sans-serif;direction:ltr;pointer-events:none}
+body.image-tool .crop-overlay[data-compact="true"] :is(.crop-size,.crop-dismiss){display:none !important}
+@media(max-width:900px),(max-height:520px) and (max-width:1180px){
+  body.image-tool #editor.studio-workbench:not(.hidden){display:grid !important;grid-template-rows:minmax(0,1fr) auto !important;gap:6px !important;padding:6px 6px max(6px,env(safe-area-inset-bottom)) !important}
+  body.image-tool #editor .mobile-controls{position:static !important;inset:auto !important;height:auto !important;max-height:45dvh !important;overflow:auto !important;display:flex !important;flex-direction:column !important;gap:5px !important;padding:0 0 2px !important;margin:0 !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;background:transparent !important;backdrop-filter:none !important}
+  body.image-tool #editor .mobile-controls .studio-tool-dock{order:-1 !important;height:50px !important;min-height:50px !important;max-height:50px !important;flex:0 0 50px !important;border-radius:13px !important;box-shadow:none !important}
+  body.image-tool #editor .mobile-shelves-wrap{min-height:42px !important;flex:0 0 auto !important;padding:5px !important;border-width:1.5px !important;border-radius:12px !important;box-shadow:none !important}
+  body.image-tool #editor .mobile-action-bar{flex:0 0 36px !important;min-height:36px !important;height:36px !important;border-width:1.5px !important;border-radius:12px !important;box-shadow:none !important}
+  body.image-tool .m-chips-strip{min-width:0;gap:5px !important}
+  body.image-tool .mobile-shelf[data-m-shelf="privacy"] .m-chips-strip{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;overflow:visible !important}
+  body.image-tool .m-action-btn-pill{min-width:0 !important;min-height:32px !important;padding:4px 5px !important;font-size:clamp(.58rem,2.7vw,.75rem) !important;white-space:nowrap !important}
+  body.image-tool .m-row-presets{display:flex !important;gap:5px !important;align-items:center !important}
+  body.image-tool #mPreset{flex:1 1 0 !important;min-width:0 !important;width:0 !important}
+  body.image-tool #mPreset-control{flex:1 1 0 !important;width:0 !important;min-width:0 !important;min-height:32px !important;font-size:.75rem !important}
+  body.image-tool #mApplyPreset{display:none !important}
+  body.image-tool #mFaviconBtn{flex:0 0 auto !important;min-height:32px !important;padding:4px 8px !important;font-size:.7rem !important}
+  body.image-tool .m-palette-row{max-height:50px;overflow:auto}
+  body.image-tool .toast-stack{bottom:auto !important;top:56px !important;inset-inline:10px !important}
+}

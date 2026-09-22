@@ -1063,7 +1063,7 @@ body.image-tool .preview-box canvas {
 
 /* Mobile controls hidden completely on desktop */
 .mobile-controls,
-body.image-tool .mobile-dock {
+body.image-tool .studio-tool-dock {
   display: none !important;
 }
 
@@ -1597,8 +1597,8 @@ body.image-tool .mobile-dock {
   }
 
   /* Mobile Tool Dock (46px) — Strictly forced visible on mobile */
-  body.image-tool .mobile-dock,
-  .mobile-controls .mobile-dock {
+  body.image-tool .studio-tool-dock,
+  .mobile-controls .studio-tool-dock {
     position: static !important;
     display: flex !important;
     visibility: visible !important;
@@ -1623,8 +1623,8 @@ body.image-tool .mobile-dock {
     overflow: hidden !important;
   }
 
-  body.image-tool .mobile-dock .m-dock-btn,
-  .mobile-controls .mobile-dock .m-dock-btn {
+  body.image-tool .studio-tool-dock .m-dock-btn,
+  .mobile-controls .studio-tool-dock .m-dock-btn {
     flex: 1 1 0% !important;
     height: 100% !important;
     display: flex !important;
@@ -1642,8 +1642,8 @@ body.image-tool .mobile-dock {
     transition: background 0.1s ease !important;
   }
 
-  body.image-tool .mobile-dock .m-dock-btn svg,
-  .mobile-controls .mobile-dock .m-dock-btn svg {
+  body.image-tool .studio-tool-dock .m-dock-btn svg,
+  .mobile-controls .studio-tool-dock .m-dock-btn svg {
     width: 17px !important;
     height: 17px !important;
     stroke: currentColor !important;
@@ -1651,16 +1651,16 @@ body.image-tool .mobile-dock {
     flex-shrink: 0 !important;
   }
 
-  body.image-tool .mobile-dock .m-dock-btn span,
-  .mobile-controls .mobile-dock .m-dock-btn span {
+  body.image-tool .studio-tool-dock .m-dock-btn span,
+  .mobile-controls .studio-tool-dock .m-dock-btn span {
     font-size: 0.6rem !important;
     font-weight: 800 !important;
     line-height: 1 !important;
     white-space: nowrap !important;
   }
 
-  body.image-tool .mobile-dock .m-dock-btn.active,
-  .mobile-controls .mobile-dock .m-dock-btn.active {
+  body.image-tool .studio-tool-dock .m-dock-btn.active,
+  .mobile-controls .studio-tool-dock .m-dock-btn.active {
     background: var(--neo-yellow) !important;
     color: #111827 !important;
     border: 1.5px solid var(--border) !important;
@@ -1751,8 +1751,8 @@ body.image-tool .mobile-dock {
     padding-inline: 4px;
   }
 
-  body.image-tool .mobile-dock .m-dock-btn span,
-  .mobile-controls .mobile-dock .m-dock-btn span {
+  body.image-tool .studio-tool-dock .m-dock-btn span,
+  .mobile-controls .studio-tool-dock .m-dock-btn span {
     font-size: .56rem !important;
   }
 }
@@ -1795,8 +1795,8 @@ body.image-tool .mobile-dock {
     flex-basis: 30px !important;
   }
 
-  body.image-tool .mobile-dock,
-  .mobile-controls .mobile-dock {
+  body.image-tool .studio-tool-dock,
+  .mobile-controls .studio-tool-dock {
     height: 42px !important;
     min-height: 42px !important;
     max-height: 42px !important;
