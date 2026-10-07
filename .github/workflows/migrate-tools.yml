@@ -1,4 +1,4 @@
-name: Migrate HozTools to root
+name: Migrate HozTools to tools.hzifa33.com
 
 on:
   workflow_dispatch:
@@ -6,9 +6,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: hoztools-migration
+  cancel-in-progress: false
+
 jobs:
   migrate:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out target repository
         uses: actions/checkout@v4
@@ -20,68 +25,250 @@ jobs:
           ref: main
           path: source-site
 
-      - name: Copy tools and update paths
+      - name: Build standalone HozTools site
         shell: bash
         run: |
           set -euo pipefail
-          rsync -a source-site/tools/ ./
-          cp source-site/assets/logo.svg assets/logo.svg
-          rm -rf source-site
-          printf '%s\n' 'tools.hzifa33.com' > CNAME
 
+          BUILD_DIR="${RUNNER_TEMP}/hoztools-build"
+          rm -rf "$BUILD_DIR"
+          mkdir -p "$BUILD_DIR/assets"
+
+          # 1) Copy ALL shared root assets first. This makes future additions to
+          #    /assets available automatically instead of maintaining a fragile list.
+          if [ -d source-site/assets ]; then
+            rsync -a source-site/assets/ "$BUILD_DIR/assets/"
+          fi
+
+          # 2) Copy the English tools tree to the standalone-domain root.
+          test -d source-site/tools
+          rsync -a source-site/tools/ "$BUILD_DIR/"
+
+          # 3) Copy every localized /<locale>/tools tree automatically.
+          #    Current locales are ar/es, but future locales are picked up too.
+          LOCALES=()
+          for locale_tools in source-site/*/tools; do
+            [ -d "$locale_tools" ] || continue
+            locale="$(basename "$(dirname "$locale_tools")")"
+            LOCALES+=("$locale")
+            mkdir -p "$BUILD_DIR/$locale"
+            rsync -a "$locale_tools/" "$BUILD_DIR/$locale/"
+          done
+
+          printf '%s\n' 'tools.hzifa33.com' > "$BUILD_DIR/CNAME"
+          touch "$BUILD_DIR/.nojekyll"
+
+          export BUILD_DIR
+          export LOCALES_JOINED="${LOCALES[*]:-}"
+
+          # 4) Rewrite parent-site URLs and /tools paths for the standalone domain.
           python3 <<'PY'
           from pathlib import Path
-          import re
+          import os, re
 
-          excluded = {".git", ".github"}
-          for path in Path(".").rglob("*"):
-              if not path.is_file() or any(part in excluded for part in path.parts):
+          root = Path(os.environ['BUILD_DIR'])
+          locales = [x for x in os.environ.get('LOCALES_JOINED', '').split() if x]
+          text_exts = {'.html', '.js', '.mjs', '.css', '.webmanifest', '.json', '.xml', '.txt'}
+
+          parent_hosts = r'(?:www\.)?hzifa33\.com|hzifa33\.github\.io'
+
+          def standalone_url(match):
+              locale = match.group(1)
+              return 'https://tools.hzifa33.com' + (f'/{locale}' if locale else '')
+
+          for path in root.rglob('*'):
+              if not path.is_file():
+                  continue
+              if path.suffix.lower() not in text_exts and path.name != 'sw.js':
                   continue
               try:
-                  text = path.read_text(encoding="utf-8")
+                  text = path.read_text(encoding='utf-8')
               except (UnicodeDecodeError, OSError):
                   continue
 
               original = text
+
+              # Absolute English/localized HozTools URLs.
               text = re.sub(
-                  r"https://(?:www\.)?hzifa33\.com/tools(?=/|[\"'?#\s<)]|$)",
-                  "https://tools.hzifa33.com",
+                  rf'https://(?:{parent_hosts})/(?:([A-Za-z]{{2}}(?:-[A-Za-z]{{2}})?)/)?tools(?=/|["\'?#\s<)]|$)',
+                  standalone_url,
                   text,
-                  flags=re.IGNORECASE,
+                  flags=re.I,
               )
-              text = re.sub(
-                  r"https://hzifa33\.github\.io/tools(?=/|[\"'?#\s<)]|$)",
-                  "https://tools.hzifa33.com",
-                  text,
-                  flags=re.IGNORECASE,
-              )
-              text = text.replace("/tools/", "/")
+
+              # Localized routes first, then the English /tools route.
+              for locale in locales:
+                  text = text.replace(f'/{locale}/tools/', f'/{locale}/')
+                  text = re.sub(
+                      rf'(["\'])/{re.escape(locale)}/tools\1',
+                      rf'\1/{locale}/\1',
+                      text,
+                  )
+
+              text = text.replace('/tools/', '/')
               text = re.sub(r'(["\'])/tools\1', r'\1/\1', text)
-              if path.name == "sw.js":
-                  text = text.replace("hoztools-v9-2", "hoztools-v9-3-domain")
-              if path.name == "index.html" and "navigator.serviceWorker.register" not in text:
-                  registration = "<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{}));}</script>"
-                  text = text.replace("</body>", registration + "</body>")
+
+              # Shared runtime builds canonical/OG URLs dynamically.
+              text = text.replace(
+                  "canonical.href='https://hzifa33.com'+url",
+                  "canonical.href='https://tools.hzifa33.com'+url",
+              )
+              text = text.replace(
+                  "og.content='https://hzifa33.com'+url",
+                  "og.content='https://tools.hzifa33.com'+url",
+              )
+
               if text != original:
-                  path.write_text(text, encoding="utf-8", newline="")
+                  path.write_text(text, encoding='utf-8', newline='')
           PY
 
-          python3 -m json.tool manifest.webmanifest >/dev/null
-          test -f index.html
-          test -f sw.js
-          test -f offline.html
+          # 5) Preserve old standalone locale URLs such as /image/ar/ by redirecting
+          #    them to the canonical /ar/image/ form.
+          python3 <<'PY'
+          from pathlib import Path
+          import html, os
 
-          if grep -RInE --exclude-dir=.git --exclude-dir=.github \
-            'hzifa33(\.github\.io|\.com)/tools|/tools/' .; then
-            echo "Legacy /tools paths remain" >&2
+          root = Path(os.environ['BUILD_DIR'])
+          locales = [x for x in os.environ.get('LOCALES_JOINED', '').split() if x]
+          locale_set = set(locales)
+          ignored = {'assets'} | locale_set
+
+          tools = [
+              p.name for p in root.iterdir()
+              if p.is_dir() and p.name not in ignored and (p / 'index.html').exists()
+          ]
+
+          for tool in tools:
+              for locale in locales:
+                  d = root / tool / locale
+                  d.mkdir(parents=True, exist_ok=True)
+                  target = f'/{locale}/{tool}/'
+                  escaped = html.escape(target, quote=True)
+                  page = f'''<!doctype html><html lang="{html.escape(locale)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url={escaped}"><link rel="canonical" href="https://tools.hzifa33.com{escaped}"><script>location.replace({target!r}+location.search+location.hash)</script><title>Redirecting…</title></head><body><a href="{escaped}">Continue</a></body></html>'''
+                  (d / 'index.html').write_text(page, encoding='utf-8')
+          PY
+
+          # 6) Generate a standalone service worker. Do NOT copy tools/sw.js from
+          #    the source: there it is only "importScripts('/sw.js')", which becomes
+          #    self-recursive when /tools is moved to the subdomain root.
+          SOURCE_SHA="$(git -C source-site rev-parse --short=12 HEAD)"
+          cat > "$BUILD_DIR/sw.js" <<'JS'
+          /* Standalone HozTools service worker. Generated by migrate-tools.yml. */
+          const CACHE='hoztools-standalone-__CACHE_VERSION__';
+          const OFFLINE='/offline.html';
+          const STATIC_RE=/\.(?:js|mjs|css|png|jpe?g|webp|gif|svg|ico|ttf|otf|woff2?|bcmap|wasm|icc|pfb)$/i;
+
+          self.addEventListener('install',event=>{
+            event.waitUntil((async()=>{
+              const cache=await caches.open(CACHE);
+              try{await cache.add(OFFLINE)}catch{}
+              await self.skipWaiting();
+            })());
+          });
+
+          self.addEventListener('activate',event=>{
+            event.waitUntil((async()=>{
+              const names=await caches.keys();
+              await Promise.all(names.filter(name=>name.startsWith('hoztools-')&&name!==CACHE).map(name=>caches.delete(name)));
+              await self.clients.claim();
+            })());
+          });
+
+          self.addEventListener('fetch',event=>{
+            const request=event.request;
+            if(request.method!=='GET')return;
+            const url=new URL(request.url);
+            if(url.origin!==self.location.origin)return;
+            if(request.mode!=='navigate'&&!STATIC_RE.test(url.pathname))return;
+
+            event.respondWith((async()=>{
+              const cache=await caches.open(CACHE);
+              try{
+                const response=await fetch(request);
+                if(response.ok&&response.type==='basic'){
+                  event.waitUntil(cache.put(request,response.clone()).catch(()=>{}));
+                }
+                return response;
+              }catch{
+                const cached=await cache.match(request);
+                if(cached)return cached;
+                if(request.mode==='navigate')return (await cache.match(OFFLINE))||Response.error();
+                return Response.error();
+              }
+            })());
+          });
+          JS
+          sed -i "s/__CACHE_VERSION__/${SOURCE_SHA}/g" "$BUILD_DIR/sw.js"
+
+          # 7) Validate manifests, worker syntax, key pages, and every absolute
+          #    local /assets reference before touching the target repository.
+          test -f "$BUILD_DIR/index.html"
+          test -f "$BUILD_DIR/offline.html"
+          test -f "$BUILD_DIR/sw.js"
+          test -f "$BUILD_DIR/assets/soft-system.css"
+          test -f "$BUILD_DIR/assets/soft-runtime.js"
+          test -f "$BUILD_DIR/assets/logo-light.svg"
+          test -f "$BUILD_DIR/assets/logo-dark.svg"
+          node --check "$BUILD_DIR/sw.js"
+
+          if [ -f "$BUILD_DIR/manifest.webmanifest" ]; then
+            python3 -m json.tool "$BUILD_DIR/manifest.webmanifest" >/dev/null
+          fi
+          for locale in "${LOCALES[@]:-}"; do
+            if [ -f "$BUILD_DIR/$locale/manifest.webmanifest" ]; then
+              python3 -m json.tool "$BUILD_DIR/$locale/manifest.webmanifest" >/dev/null
+            fi
+          done
+
+          python3 <<'PY'
+          from pathlib import Path
+          import os, re, sys
+
+          root = Path(os.environ['BUILD_DIR'])
+          missing = []
+          pattern = re.compile(r'''(?:href|src)=["'](/assets/[^"'?#]+)''', re.I)
+
+          for page in root.rglob('*.html'):
+              text = page.read_text(encoding='utf-8', errors='ignore')
+              for ref in set(pattern.findall(text)):
+                  if not (root / ref.lstrip('/')).is_file():
+                      missing.append((page.relative_to(root), ref))
+
+          if missing:
+              for page, ref in missing:
+                  print(f'MISSING: {ref} referenced by {page}', file=sys.stderr)
+              raise SystemExit(1)
+          PY
+
+          LEGACY_PATTERN='hzifa33(\.github\.io|\.com)/([A-Za-z]{2}(-[A-Za-z]{2})?/)?tools(/|["'"'"'?#[:space:]<)]|$)|/([A-Za-z]{2}(-[A-Za-z]{2})?/)?tools/'
+          if find "$BUILD_DIR" -type f \
+              \( -name '*.html' -o -name '*.js' -o -name '*.mjs' -o -name '*.css' -o -name '*.webmanifest' -o -name '*.json' -o -name '*.xml' \) \
+              -print0 | xargs -0 -r grep -nE "$LEGACY_PATTERN"; then
+            echo 'Legacy parent-site HozTools paths remain in generated functional files.' >&2
             exit 1
           fi
 
+          # 8) Replace the generated site atomically-ish and remove stale site files.
+          #    Repository metadata/workflow/docs are preserved.
+          rm -rf source-site
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='README.md' \
+            --exclude='LICENSE' \
+            --exclude='.gitignore' \
+            "$BUILD_DIR/" ./
+
       - name: Commit migrated site
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add --all
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Migrate HozTools to tools.hzifa33.com"
+          if git diff --cached --quiet; then
+            echo 'No migration changes to commit.'
+            exit 0
+          fi
+          git commit -m "Migrate HozTools from Hzifa33.github.io"
           git push
