@@ -30,7 +30,7 @@ window.HozTools={$, $$,lang,tr,applyLang,toast,bytes,download,copy,ranges,random
 document.addEventListener('DOMContentLoaded',()=>{
  const H=window.HozTools;
  const names={calculators:['calcBtn','copyResult','calcResult'],'split-bill':['calculate','copyResult','summary'],text:[null,'copyBtn','output'],qr:['generateBtn','copyData','qrPreview'],whatsapp:['buildBtn','copyBtn','waResult']};
- const spec=names[location.pathname.replace(/^\/(ar|es)(?=\/)/,'').split('/')[2]];
+ const spec=names[location.pathname.replace(/^\/(ar|es)(?=\/)/,'').split('/')[1]];
  if(!spec)return;
  const [action,copyId,resultId]=spec,copy=document.getElementById(copyId),result=document.getElementById(resultId);
  if(!copy||!result)return;

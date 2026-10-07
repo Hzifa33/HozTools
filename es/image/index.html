@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<script>(function(){let theme;try{theme=localStorage.getItem('site_theme')}catch{}const lang=/^\/(ar|es)(\/|$)/.exec(location.pathname)?.[1]||'en';window.HozPageLanguage=lang;document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.classList.toggle('dark',theme?theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches)})();</script><title>Image Lab — Editor de imágenes</title><meta content="Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta." data-ar-content="تحرير الصور بخصوصية: قص وتغيير أبعاد وضغط وتحويل JPG وPNG وWebP، وضبط الإضاءة والتباين والألوان، وتطبيق مظاهر وتمويه مناطق وتصدير الصور." data-en-content="Edit images privately: crop, resize, compress and convert JPG, PNG and WebP; adjust brightness, contrast and color, apply looks, blur areas and export." data-es-content="Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta." name="description"/><meta content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" name="robots"/><link href="/assets/logo-light.svg" rel="icon" type="image/svg+xml"/><link href="/es/manifest.webmanifest" rel="manifest"/><link href="/assets/app-icon-classic-clear-180.png" rel="apple-touch-icon" sizes="180x180"/><script defer="" src="/assets/workbench.js?v=9.3"></script><script defer="" src="/assets/compact.js?v=9.2"></script><link href="/assets/tools-ui.css?v=10.5" rel="stylesheet"/><link href="/image/image.css?v=14.0" rel="stylesheet"/><script defer="" src="/assets/action-icons.js?v=9.2"></script><link href="/assets/soft-system.css?v=20261007" rel="stylesheet"/><script defer="" src="/assets/soft-runtime.js?v=20261007"></script><link href="https://tools.hzifa33.com/es/image/" rel="canonical"/><link href="https://tools.hzifa33.com/image/" hreflang="en" rel="alternate"/><link href="https://tools.hzifa33.com/ar/image/" hreflang="ar" rel="alternate"/><link href="https://tools.hzifa33.com/es/image/" hreflang="es" rel="alternate"/><link href="https://tools.hzifa33.com/image/" hreflang="x-default" rel="alternate"/><meta content="website" property="og:type"/><meta content="Hozaifa Abozaid · HozTools" property="og:site_name"/><meta content="Image Lab — Editor de imágenes" data-ar-content="معمل الصور — استوديو تحرير الصور" data-en-content="Image Lab — Studio Photo Editor" data-es-content="Image Lab — Editor de imágenes" property="og:title"/><meta content="Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta." data-ar-content="تحرير الصور بخصوصية: قص وتغيير أبعاد وضغط وتحويل JPG وPNG وWebP، وضبط الإضاءة والتباين والألوان، وتطبيق مظاهر وتمويه مناطق وتصدير الصور." data-en-content="Edit images privately: crop, resize, compress and convert JPG, PNG and WebP; adjust brightness, contrast and color, apply looks, blur areas and export." data-es-content="Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta." property="og:description"/><meta content="https://tools.hzifa33.com/es/image/" property="og:url"/><meta content="https://hzifa33.com/assets/social-preview.png" property="og:image"/><meta content="image/png" property="og:image:type"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="HozTools — private browser tools by Hozaifa Abozaid" property="og:image:alt"/><meta content="es_ES" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Image Lab — Editor de imágenes" data-ar-content="معمل الصور — استوديو تحرير الصور" data-en-content="Image Lab — Studio Photo Editor" data-es-content="Image Lab — Editor de imágenes" name="twitter:title"/><meta content="Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta." data-ar-content="تحرير الصور بخصوصية: قص وتغيير أبعاد وضغط وتحويل JPG وPNG وWebP، وضبط الإضاءة والتباين والألوان، وتطبيق مظاهر وتمويه مناطق وتصدير الصور." data-en-content="Edit images privately: crop, resize, compress and convert JPG, PNG and WebP; adjust brightness, contrast and color, apply looks, blur areas and export." data-es-content="Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta." name="twitter:description"/><meta content="https://hzifa33.com/assets/social-preview.png" name="twitter:image"/><script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Image Lab", "url": "https://tools.hzifa33.com/es/image/", "applicationCategory": "MultimediaApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "inLanguage": "es", "description": "Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta.", "browserRequirements": "JavaScript enabled; modern browser", "isAccessibleForFree": true, "image": "https://tools.hzifa33.com/assets/app-icon-classic-clear-512.png"}, {"@type": "WebPage", "@id": "https://tools.hzifa33.com/es/image/#webpage", "url": "https://tools.hzifa33.com/es/image/", "name": "Image Lab — Editor de imágenes", "description": "Edita imágenes en privado: recorta, redimensiona, comprime JPG, PNG y WebP; ajusta luz, contraste y color, aplica aspectos, desenfoca y exporta.", "inLanguage": "es", "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Hozaifa Abozaid", "item": "https://hzifa33.com/es/"}, {"@type": "ListItem", "position": 2, "name": "HozTools", "item": "https://tools.hzifa33.com/es/"}, {"@type": "ListItem", "position": 3, "name": "Image Lab", "item": "https://tools.hzifa33.com/es/image/"}]}]}</script><meta content="#f4f8fa" media="(prefers-color-scheme: light)" name="theme-color"/><meta content="#101d28" media="(prefers-color-scheme: dark)" name="theme-color"/><link href="/assets/soft-refinements.css?v=20261007d" rel="stylesheet"/><script defer="" src="/assets/install-prompt.js?v=20261007c"></script></head>
+<body class="image-tool" data-ar-title="معمل الصور — استوديو تحرير الصور" data-en-title="Image Lab — Studio Photo Editor" data-es-title="Image Lab — Editor de imágenes" data-page-path="/image/">
+<a class="skip" data-ar="انتقل إلى الأداة" data-en="Skip to workspace" data-es="Ir a la herramienta" href="#main">Ir a la herramienta</a>
+<!-- Unified Sleek Single Studio Header (Eliminates duplicate header) -->
+<header class="studio-header" id="studioHeader">
+<div class="studio-header-inner">
+<div class="sh-left">
+<a class="sh-brand" href="/es/" title="HozTools">
+<span class="sh-brand-mark"><img alt="HozTools" data-brand-logo="" src="/assets/logo-light.svg"/></span>
+<strong class="sh-brand-title">IMAGE LAB</strong>
+</a>
+<a aria-label="All tools" class="sh-back-btn" href="/es/" title="All tools">
+<svg fill="none" height="16" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="16"><path d="m15 18-6-6 6-6"></path></svg>
+<span data-ar="كل الأدوات" data-en="All tools" data-es="Herramientas">Herramientas</span>
+</a>
+<div class="sh-divider"></div>
+<button aria-label="Cambiar imagen" class="sh-btn" data-ar-label="تغيير الصورة" data-en-label="Change image" data-es-label="Cambiar imagen" id="changeImage" title="Open another image" type="button">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5M12 3v12"></path></svg>
+<span data-ar="تغيير" data-en="Change" data-es="Cambiar">Cambiar</span>
+</button>
+<div class="sh-history-group">
+<button aria-label="Deshacer" class="sh-btn icon-only" data-ar-label="تراجع" data-en-label="Undo" data-es-label="Deshacer" disabled="" id="undoBtn" title="Undo (Ctrl+Z)" type="button">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="15"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+</button><button aria-label="Rehacer" class="sh-btn icon-only" data-ar-label="إعادة التعديل" data-en-label="Redo" data-es-label="Rehacer" disabled="" id="redoBtn" type="button"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24"><path d="M21 7v6h-6M3 17a9 9 0 0 1 15-7l3 3"></path></svg></button>
+<button aria-label="Restablecer original" class="sh-btn icon-only" data-ar-label="استعادة الأصل" data-en-label="Restore original" data-es-label="Restablecer original" disabled="" id="resetBtn" title="Reset to original" type="button">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="15"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+</button>
+</div>
+<span class="sh-dim-pill" id="status">—</span>
+</div>
+<div class="sh-center">
+<div class="sh-zoom-group">
+<button aria-label="Reducir" class="sh-zoom-btn" data-ar-label="تصغير" data-en-label="Zoom out" data-es-label="Reducir" id="zoomOutBtn" title="Zoom out" type="button">
+<svg fill="none" height="13" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="13"><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+</button>
+<button class="sh-zoom-pill active" id="zoomFitBtn" title="Fit to stage" type="button">
+<span data-ar="ملاءمة" data-en="Auto Fit" data-es="Ajustar">Ajustar</span>
+</button>
+<button aria-label="Ampliar" class="sh-zoom-btn" data-ar-label="تكبير" data-en-label="Zoom in" data-es-label="Ampliar" id="zoomInBtn" title="Zoom in" type="button">
+<svg fill="none" height="13" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="13"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+</button>
+</div>
+</div>
+<div class="sh-right">
+<div class="neo-lang-picker">
+<button aria-expanded="false" aria-haspopup="true" aria-label="Select Language" class="neo-lang-btn sh-lang-btn" id="neo-lang-btn" type="button">
+<span id="neo-lang-code">ES</span>
+</button>
+<div class="neo-lang-menu" id="neo-lang-menu" role="menu">
+<button aria-checked="false" class="neo-lang-option active" data-lang="en" role="menuitemradio" type="button">English</button>
+<button aria-checked="false" class="neo-lang-option" data-lang="ar" role="menuitemradio" type="button">العربية</button>
+<button aria-checked="true" class="neo-lang-option" data-lang="es" role="menuitemradio" type="button">Español</button>
+</div>
+</div>
+<button aria-label="Theme" class="icon-btn sh-theme-btn" id="themeBtn" type="button"></button>
+<button aria-label="Exportar imagen" class="btn primary sh-export-btn js-export-image" data-ar-label="تصدير الصورة" data-en-label="Export image" data-es-label="Exportar imagen" disabled="" id="quickExportBtn" type="button">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></svg>
+<strong data-ar="تصدير الصورة" data-en="Export Image" data-es="Exportar">Exportar</strong>
+</button>
+</div>
+</div>
+</header>
+<main class="studio-app" id="main" tabindex="-1">
+<!-- Initial Dropzone (shown before loading an image) -->
+<div class="dropzone studio-dropzone" id="dropzone" tabindex="0">
+<input accept="image/jpeg,image/png,image/webp,image/gif" aria-label="imageInput" data-native-file="" data-native-select="" id="imageInput" style="display:none!important" type="file"/>
+<div class="dropzone-content">
+<div class="dropzone-icon-ring">
+<svg fill="none" height="36" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="36"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5M12 3v12"></path></svg>
+</div>
+<h1 class="dropzone-title" data-ar="صورتك، بإمكانات جديدة." data-en="Your next edit starts here." data-es="Tu próxima edición empieza aquí.">Tu próxima edición empieza aquí.</h1>
+<p class="dropzone-desc" data-ar="اختر صورة JPG أو PNG أو WebP أو GIF (الإطار الأول) حتى 30 ميجابايت و24 ميجابكسل. قصّها أو غيّر أبعادها أو أخفِ جزءًا منها، ثم اختر الصيغة ونزّل النتيجة. المعالجة داخل متصفحك." data-en="Choose a JPG, PNG, WebP or GIF (first frame), up to 30 MB and 24 megapixels. Crop, resize or protect an area, then choose a format and download. Everything is processed in your browser." data-es="Elige JPG, PNG, WebP o GIF (primer fotograma), hasta 30 MB y 24 megapíxeles. Recorta, redimensiona o protege un área; elige el formato y descarga. Todo se procesa en tu navegador.">Elige JPG, PNG, WebP o GIF (primer fotograma), hasta 30 MB y 24 megapíxeles. Recorta, redimensiona o protege un área; elige el formato y descarga. Todo se procesa en tu navegador.</p>
+<div class="dropzone-badges">
+<span class="badge">JPG</span>
+<span class="badge">PNG</span>
+<span class="badge">WebP</span>
+<span class="badge">GIF</span>
+<span class="badge highlight" data-ar="لصق Ctrl+V" data-en="Ctrl+V Paste" data-es="Pegar Ctrl+V">Pegar Ctrl+V</span>
+</div><p class="soft-studio-help" data-ar="اسحب صورة · اضغط للاختيار · الصق باستخدام Ctrl+V" data-en="Drop an image · Click to browse · Ctrl+V to paste" data-es="Arrastra una imagen · Elige archivo · Pega con Ctrl+V">Arrastra una imagen · Elige archivo · Pega con Ctrl+V</p>
+</div>
+</div>
+<!-- Studio Editor Workbench (shown after loading an image) -->
+<div class="hidden studio-workbench" id="editor">
+<div class="studio-body">
+<!-- Desktop Left Tool Rail (54px sleek compact studio rail) -->
+<nav aria-label="Studio Tools" class="studio-rail" id="studioRail">
+<button class="rail-btn active" data-tool="crop" title="Crop &amp; Perspective" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"></path><path d="M18 22V8a2 2 0 0 0-2-2H2"></path></svg>
+<span data-ar="قص" data-en="Crop" data-es="Recortar">Recortar</span>
+</button>
+<button class="rail-btn" data-tool="resize" title="Adjust, Resize &amp; Compress" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M4 14h6v6"></path><path d="M20 10h-6V4"></path><path d="m14 10 7-7"></path><path d="m3 21 7-7"></path></svg>
+<span data-ar="حجم" data-en="Adjust" data-es="Ajustar">Ajustar</span>
+</button><button class="rail-btn" data-tool="light" type="button"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M4 7h16M4 17h16"></path><circle cx="9" cy="7" fill="currentColor" r="3"></circle><circle cx="15" cy="17" fill="currentColor" r="3"></circle></svg><span data-ar="إضاءة" data-en="Light" data-es="Luz">Luz</span></button>
+<button class="rail-btn" data-tool="transform" title="Rotate &amp; Flip" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>
+<span data-ar="تدوير" data-en="Rotate" data-es="Girar">Girar</span>
+</button>
+<button class="rail-btn" data-tool="privacy" title="Privacy, Blur &amp; Pixelate" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9.5 12a2.5 2.5 0 1 1 5 0v3h-5z"></path></svg>
+<span data-ar="خصوصية" data-en="Privacy" data-es="Privacidad">Privacidad</span>
+</button>
+<button class="rail-btn" data-tool="presets" title="Social Presets &amp; Favicon" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><rect height="7" rx="1.5" width="7" x="3" y="3"></rect><rect height="7" rx="1.5" width="7" x="14" y="3"></rect><rect height="7" rx="1.5" width="7" x="3" y="14"></rect><rect height="7" rx="1.5" width="7" x="14" y="14"></rect></svg>
+<span data-ar="مقاسات" data-en="Presets" data-es="Formatos">Formatos</span>
+</button>
+<button class="rail-btn" data-tool="palette" title="Palette &amp; Metadata" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="13.5" cy="6.5" fill="currentColor" r=".5"></circle><circle cx="17.5" cy="10.5" fill="currentColor" r=".5"></circle><circle cx="8.5" cy="7.5" fill="currentColor" r=".5"></circle><circle cx="6.5" cy="12.5" fill="currentColor" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>
+<span data-ar="ألوان" data-en="Colors" data-es="Colores">Colores</span>
+</button>
+</nav>
+<!-- Desktop Tool Drawer (250px compact studio panel) -->
+<aside class="studio-drawer" id="studioDrawer">
+<div class="studio-drawer-header">
+<h2 id="drawerHeading">Crop &amp; Frame</h2>
+<button aria-label="Collapse panel" class="drawer-collapse-btn" id="drawerToggleBtn" title="Collapse panel" type="button">
+<svg fill="none" height="14" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="14"><path d="m15 18-6-6 6-6"></path></svg>
+</button>
+</div>
+<div class="studio-drawer-content">
+<!-- 1. CROP PANEL -->
+<div class="tool-content-panel active" data-panel="crop" id="toolPanelCrop">
+<span class="sub-label" data-ar="نسب الأبعاد" data-en="Aspect Ratios" data-es="Proporciones">Proporciones</span>
+<div class="studio-aspect-pills">
+<button class="aspect-pill active" data-ratio="free" type="button">
+<span class="pill-icon">⊡</span>
+<span data-ar="حر" data-en="Free" data-es="Libre">Libre</span>
+</button>
+<button class="aspect-pill" data-ratio="original" type="button">
+<span class="pill-icon">⧉</span>
+<span data-ar="أصلي" data-en="Original" data-es="Original">Original</span>
+</button>
+<button class="aspect-pill" data-ratio="1:1" type="button">
+<span class="pill-icon">▢</span>
+<span>1:1</span>
+</button>
+<button class="aspect-pill" data-ratio="4:5" type="button">
+<span class="pill-icon">▯</span>
+<span>4:5</span>
+</button>
+<button class="aspect-pill" data-ratio="9:16" type="button">
+<span class="pill-icon">📱</span>
+<span>9:16</span>
+</button>
+<button class="aspect-pill" data-ratio="16:9" type="button">
+<span class="pill-icon">▭</span>
+<span>16:9</span>
+</button>
+<button class="aspect-pill" data-ratio="3:2" type="button">
+<span class="pill-icon">📷</span>
+<span>3:2</span>
+</button>
+</div>
+<span class="sub-label mt" data-ar="الإحداثيات (بكسل)" data-en="Coordinates (px)" data-es="Coordenadas (px)">Coordenadas (px)</span>
+<div class="fields-compact two">
+<div class="field-c"><label for="cropX">X</label><input class="input-c" data-native-select="" id="cropX" min="0" type="number" value="0"/></div>
+<div class="field-c"><label for="cropY">Y</label><input class="input-c" data-native-select="" id="cropY" min="0" type="number" value="0"/></div>
+<div class="field-c"><label data-ar="العرض" data-en="W" data-es="Ancho" for="cropW">Ancho</label><input class="input-c" data-native-select="" id="cropW" min="1" type="number"/></div>
+<div class="field-c"><label data-ar="الارتفاع" data-en="H" data-es="Alto" for="cropH">Alto</label><input class="input-c" data-native-select="" id="cropH" min="1" type="number"/></div>
+</div>
+<div class="actions mt">
+<button class="btn mint small" data-ar="تنفيذ القص" data-en="Apply Crop" data-es="Aplicar recorte" disabled="" id="cropBtn" type="button">Aplicar recorte</button>
+</div>
+</div>
+<!-- 2. RESIZE & COMPRESS PANEL -->
+<div class="tool-content-panel" data-panel="resize" hidden="" id="toolPanelResize">
+<span class="sub-label" data-ar="أبعاد الصورة" data-en="Dimensions" data-es="Dimensiones">Dimensiones</span>
+<div class="fields-compact two">
+<div class="field-c"><label data-ar="العرض" data-en="W" data-es="Ancho" for="width">Ancho</label><input class="input-c" data-native-select="" id="width" min="1" type="number"/></div>
+<div class="field-c"><label data-ar="الارتفاع" data-en="H" data-es="Alto" for="height">Alto</label><input class="input-c" data-native-select="" id="height" min="1" type="number"/></div>
+</div>
+<label class="check-c mt"><input aria-label="lockRatio" checked="" data-native-select="" id="lockRatio" type="checkbox"/><span data-ar="تثبيت نسبة الأبعاد" data-en="Lock aspect ratio" data-es="Bloquear proporción">Bloquear proporción</span></label>
+<span class="sub-label mt" data-ar="الصيغة والجودة" data-en="Format &amp; Quality" data-es="Formato y calidad">Formato y calidad</span>
+<div class="field-c">
+<label data-ar="الصيغة" data-en="Format" data-es="Formato" for="format">Formato</label>
+<select class="select-c" data-native-select="" id="format"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select>
+</div>
+<div class="field-c mt">
+<label for="quality"><span data-ar="الجودة" data-en="Quality" data-es="Calidad">Calidad</span> <span id="qualityLabel">85%</span></label>
+<input class="range" data-native-select="" id="quality" max="100" min="10" type="range" value="85"/>
+</div>
+<div class="field-c mt"><label data-ar="الحجم المستهدف (KB)" data-en="Target (KB)" data-es="Objetivo KB" for="targetKb">Objetivo KB</label><input class="input-c" data-native-select="" id="targetKb" min="5" placeholder="e.g. 200" type="number"/></div>
+<div class="estimate-box mt" id="estimate"><span class="muted" data-ar="تقدير الملف هنا." data-en="Estimate appears here." data-es="Estimación aquí.">Estimación aquí.</span></div>
+<div class="actions mt"><button class="btn primary small js-export-image" data-ar="تصدير الصورة" data-en="Export Image" data-es="Exportar" disabled="" id="exportBtn" type="button">Exportar</button></div>
+</div>
+<!-- 3. TRANSFORM PANEL -->
+<div class="tool-content-panel" data-panel="transform" hidden="" id="toolPanelTransform">
+<span class="sub-label" data-ar="التدوير والانعكاس" data-en="Rotate &amp; Flip" data-es="Giro y reflejo">Giro y reflejo</span>
+<div class="studio-transform-grid">
+<button class="btn studio-trans-btn" data-transform="rotate-left" disabled="" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="18"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+<span>↶ 90°</span>
+</button>
+<button class="btn studio-trans-btn" data-transform="rotate-right" disabled="" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="18"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
+<span>↷ 90°</span>
+</button>
+<button class="btn studio-trans-btn" data-transform="flip-x" disabled="" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="18"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M20 20l-8-8 8-8v16z"></path><path d="M4 20l8-8-8-8v16z"></path></svg>
+<span data-ar="عكس أفقي" data-en="Flip H" data-es="Voltear H">Voltear H</span>
+</button>
+<button class="btn studio-trans-btn" data-transform="flip-y" disabled="" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="18"><line x1="2" x2="22" y1="12" y2="12"></line><path d="M20 20l-8-8-8 8h16z"></path><path d="M20 4l-8 8-8-8h16z"></path></svg>
+<span data-ar="عكس رأسي" data-en="Flip V" data-es="Voltear V">Voltear V</span>
+</button>
+</div>
+</div>
+<!-- 4. PRIVACY & EFFECTS PANEL -->
+<div class="tool-content-panel" data-panel="privacy" hidden="" id="toolPanelPrivacy">
+<p class="notice-compact" data-ar="حدد منطقة على الصورة للتمويه أو البكسلة." data-en="Select an area on the canvas to blur or pixelate." data-es="Selecciona una zona para desenfocar.">Selecciona una zona para desenfocar.</p>
+<div class="field-c mt"><label for="effectStrength"><span data-ar="القوة" data-en="Strength" data-es="Fuerza">Fuerza</span> <span id="effectLabel">12</span></label><input class="range" data-native-select="" id="effectStrength" max="40" min="3" type="range" value="12"/></div>
+<div class="field-c"><label for="featherStrength"><span data-ar="النعومة" data-en="Softness" data-es="Suavidad">Suavidad</span> <span id="featherLabel">8</span></label><input class="range" data-native-select="" id="featherStrength" max="28" min="0" type="range" value="8"/></div>
+<div class="actions mt">
+<button class="btn cyan small" data-ar="تمويه" data-en="Blur" data-es="Desenfocar" disabled="" id="blurBtn" type="button">Desenfocar</button>
+<button class="btn coral small" data-ar="بكسلة" data-en="Pixelate" data-es="Pixelar" disabled="" id="pixelBtn" type="button">Pixelar</button>
+</div>
+<div class="actions mt">
+<button class="btn mint small" data-ar="بلا بيانات" data-en="No EXIF" data-es="Sin EXIF" disabled="" id="cleanExport" type="button">Sin EXIF</button>
+<button class="btn ghost small" disabled="" id="undoEffect" type="button"><span data-ar="تراجع" data-en="Undo FX" data-es="Deshacer">Deshacer</span><small class="effect-layer-count" hidden="" id="effectLayerCount">0</small></button>
+</div>
+</div>
+<!-- 5. PRESETS & ICONS PANEL -->
+<div class="tool-content-panel" data-panel="presets" hidden="" id="toolPanelPresets">
+<span class="sub-label" data-ar="مقاسات التواصل" data-en="Social Media Crop" data-es="Recorte social">Recorte social</span>
+<div class="field-c"><select aria-label="preset" class="select-c" data-native-select="" id="preset"><option value="">—</option><option value="1:1">1:1 Square</option><option value="4:5">4:5 Portrait</option><option value="9:16">9:16 Story / Reel</option><option value="16:9">16:9 Wide / YouTube</option><option value="1.91:1">1.91:1 Facebook</option></select></div>
+<div class="actions mt"><button class="btn iris small" data-ar="تطبيق القص" data-en="Apply Crop" data-es="Aplicar" disabled="" id="applyPreset" type="button">Aplicar</button></div>
+<span class="sub-label mt" data-ar="صانع أيقونة الموقع" data-en="Favicon Generator" data-es="Favicon">Favicon</span>
+<div class="field-c"><select aria-label="faviconSize" class="select-c" data-native-select="" id="faviconSize"><option>32</option><option>48</option><option>180</option><option>192</option><option>512</option></select></div>
+<button class="btn primary small mt" data-ar="تنزيل الأيقونة" data-en="Download Favicon" data-es="Descargar" disabled="" id="faviconBtn" type="button">Descargar</button>
+</div>
+<!-- 6. PALETTE & METADATA PANEL -->
+<div class="tool-content-panel" data-panel="palette" hidden="" id="toolPanelPalette">
+<span class="sub-label" data-ar="الألوان المهيمنة" data-en="Dominant Colors" data-es="Colores">Colores</span>
+<div class="color-row-c mt" id="palette"></div>
+<span class="sub-label mt" data-ar="معلومات الصورة" data-en="Metadata" data-es="Metadatos">Metadatos</span>
+<div class="metric-grid-c mt" id="metadata"></div>
+</div>
+<div class="tool-content-panel soft-light-panel" data-panel="light" hidden=""><p class="soft-light-note" data-ar="عاين المظهر ثم طبّقه لحفظه. الانتقال لأداة أخرى يلغي المعاينة." data-en="Preview the look. Apply to keep it; switching tools cancels the preview." data-es="Previsualiza y aplica para guardar. Cambiar de herramienta cancela la vista previa.">Previsualiza y aplica para guardar. Cambiar de herramienta cancela la vista previa.</p><div class="soft-filter-presets"><button class="m-chip" data-ar="طبيعي" data-en="Natural" data-es="Natural" data-look="natural" type="button">Natural</button><button class="m-chip" data-ar="حيوي" data-en="Vivid" data-es="Vivo" data-look="vivid" type="button">Vivo</button><button class="m-chip" data-ar="أحادي" data-en="Mono" data-es="Mono" data-look="mono" type="button">Mono</button><button class="m-chip" data-ar="ناعم" data-en="Soft" data-es="Suave" data-look="soft" type="button">Suave</button></div><div class="soft-adjust-fields"><div class="field"><label data-ar="السطوع" data-en="Brightness" data-es="Brillo" for="adjust-brightness">Brillo</label><div class="soft-range-line"><input data-adjust="brightness" id="adjust-brightness" max="200" min="0" step="1" type="range" value="100"/><output for="adjust-brightness">100%</output></div></div><div class="field"><label data-ar="التباين" data-en="Contrast" data-es="Contraste" for="adjust-contrast">Contraste</label><div class="soft-range-line"><input data-adjust="contrast" id="adjust-contrast" max="200" min="0" step="1" type="range" value="100"/><output for="adjust-contrast">100%</output></div></div><div class="field"><label data-ar="التشبع" data-en="Saturation" data-es="Saturación" for="adjust-saturation">Saturación</label><div class="soft-range-line"><input data-adjust="saturation" id="adjust-saturation" max="200" min="0" step="1" type="range" value="100"/><output for="adjust-saturation">100%</output></div></div></div><button class="btn primary soft-apply-look" data-ar="تطبيق المظهر" data-en="Apply look" data-es="Aplicar aspecto" disabled="" type="button">Aplicar aspecto</button></div></div>
+</aside>
+<!-- Center Canvas Stage (The true hero of the screen) -->
+<div class="studio-stage" id="studioStage">
+<div class="preview-box">
+<canvas id="canvas"></canvas>
+</div>
+</div>
+</div>
+<!-- Mobile Native Bottom App Controls (Snapseed / VSCO style) -->
+<div class="mobile-controls" id="mobileControls">
+<!-- Context Shelves (Each tool has its own dedicated sleek shelf right here) -->
+<div class="mobile-shelves-wrap">
+<!-- 1. Mobile Crop Shelf -->
+<div class="mobile-shelf active" data-m-shelf="crop">
+<div class="m-chips-strip">
+<button class="m-chip active" data-ratio="free" type="button">⊡ <span data-ar="حر" data-en="Free" data-es="Libre">Libre</span></button>
+<button class="m-chip" data-ratio="original" type="button">⧉ <span data-ar="أصلي" data-en="Original" data-es="Original">Original</span></button>
+<button class="m-chip" data-ratio="1:1" type="button">▢ 1:1</button>
+<button class="m-chip" data-ratio="4:5" type="button">▯ 4:5</button>
+<button class="m-chip" data-ratio="9:16" type="button">📱 9:16</button>
+<button class="m-chip" data-ratio="16:9" type="button">▭ 16:9</button>
+<button class="m-chip" data-ratio="3:2" type="button">📷 3:2</button>
+</div>
+</div>
+<!-- 2. Mobile Adjust Shelf -->
+<div class="mobile-shelf" data-m-shelf="resize">
+<div class="m-adjust-grid">
+<div class="m-row">
+<label>W</label><input aria-label="Ancho en píxeles" class="m-input" data-ar-label="العرض بالبكسل" data-en-label="Width in pixels" data-es-label="Ancho en píxeles" data-native-select="" id="mWidth" min="1" type="number"/>
+<label>H</label><input aria-label="Alto en píxeles" class="m-input" data-ar-label="الارتفاع بالبكسل" data-en-label="Height in pixels" data-es-label="Alto en píxeles" data-native-select="" id="mHeight" min="1" type="number"/>
+<select aria-label="Formato" class="m-select" data-ar-label="صيغة الملف" data-en-label="File format" data-es-label="Formato" data-native-select="" id="mFormat"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select>
+</div>
+<div class="m-row mt-xs">
+<span data-ar="الجودة" data-en="Quality" data-es="Calidad">Calidad</span>
+<input aria-label="Calidad" class="m-range" data-ar-label="الجودة" data-en-label="Quality" data-es-label="Calidad" data-native-select="" id="mQuality" max="100" min="10" type="range" value="85"/>
+<strong id="mQualityLabel">85%</strong>
+</div>
+</div>
+</div>
+<!-- 3. Mobile Transform Shelf -->
+<div class="mobile-shelf" data-m-shelf="transform">
+<div class="m-chips-strip">
+<button class="m-action-btn-pill" data-transform="rotate-left" disabled="" type="button">↶ 90°</button>
+<button class="m-action-btn-pill" data-transform="rotate-right" disabled="" type="button">↷ 90°</button>
+<button class="m-action-btn-pill" data-ar="عكس أفقي" data-en="Flip H" data-es="Voltear H" data-transform="flip-x" disabled="" type="button">Voltear H</button>
+<button class="m-action-btn-pill" data-ar="عكس رأسي" data-en="Flip V" data-es="Voltear V" data-transform="flip-y" disabled="" type="button">Voltear V</button>
+</div>
+</div>
+<!-- 4. Mobile Privacy Shelf -->
+<div class="mobile-shelf" data-m-shelf="privacy">
+<div class="m-chips-strip">
+<button class="m-action-btn-pill cyan" data-ar="تمويه" data-en="Blur Area" data-es="Desenfocar" disabled="" id="mBlurBtn" type="button">Desenfocar</button>
+<button class="m-action-btn-pill coral" data-ar="بكسلة" data-en="Pixelate Area" data-es="Pixelar" disabled="" id="mPixelBtn" type="button">Pixelar</button>
+<button class="m-action-btn-pill ghost" data-ar="تراجع" data-en="Undo FX" data-es="Deshacer" disabled="" id="mUndoEffect" type="button">Deshacer</button>
+</div>
+</div>
+<!-- 5. Mobile Presets Shelf -->
+<div class="mobile-shelf" data-m-shelf="presets">
+<div class="m-row-presets">
+<select aria-label="Recorte social" class="m-select grow" data-ar-label="مقاس التواصل" data-en-label="Social crop" data-es-label="Recorte social" data-native-select="" id="mPreset"><option value="">Social crop...</option><option value="1:1">1:1 Square</option><option value="4:5">4:5 Portrait</option><option value="9:16">9:16 Story</option><option value="16:9">16:9 Wide</option></select>
+<button class="btn iris small" data-ar="تطبيق" data-en="Apply" data-es="Aplicar" disabled="" id="mApplyPreset" type="button">Aplicar</button>
+<button class="btn primary small" data-ar="أيقونة" data-en="Favicon" data-es="Favicon" disabled="" id="mFaviconBtn" type="button">Favicon</button>
+</div>
+</div>
+<!-- 6. Mobile Palette Shelf -->
+<div class="mobile-shelf" data-m-shelf="palette">
+<div class="m-palette-row" id="mPaletteRow">
+<div class="color-row-c" id="mPalette"></div>
+<span class="m-meta-info" id="mMetaInfo">—</span>
+</div>
+</div>
+<div class="mobile-shelf soft-light-panel" data-m-shelf="light" hidden=""><p class="soft-light-note" data-ar="عاين المظهر ثم طبّقه لحفظه. الانتقال لأداة أخرى يلغي المعاينة." data-en="Preview the look. Apply to keep it; switching tools cancels the preview." data-es="Previsualiza y aplica para guardar. Cambiar de herramienta cancela la vista previa.">Previsualiza y aplica para guardar. Cambiar de herramienta cancela la vista previa.</p><div class="soft-filter-presets"><button class="m-chip" data-ar="طبيعي" data-en="Natural" data-es="Natural" data-look="natural" type="button">Natural</button><button class="m-chip" data-ar="حيوي" data-en="Vivid" data-es="Vivo" data-look="vivid" type="button">Vivo</button><button class="m-chip" data-ar="أحادي" data-en="Mono" data-es="Mono" data-look="mono" type="button">Mono</button><button class="m-chip" data-ar="ناعم" data-en="Soft" data-es="Suave" data-look="soft" type="button">Suave</button></div><div class="soft-adjust-fields"><div class="field"><label data-ar="السطوع" data-en="Brightness" data-es="Brillo" for="m-adjust-brightness">Brillo</label><div class="soft-range-line"><input data-adjust="brightness" id="m-adjust-brightness" max="200" min="0" step="1" type="range" value="100"/><output for="m-adjust-brightness">100%</output></div></div><div class="field"><label data-ar="التباين" data-en="Contrast" data-es="Contraste" for="m-adjust-contrast">Contraste</label><div class="soft-range-line"><input data-adjust="contrast" id="m-adjust-contrast" max="200" min="0" step="1" type="range" value="100"/><output for="m-adjust-contrast">100%</output></div></div><div class="field"><label data-ar="التشبع" data-en="Saturation" data-es="Saturación" for="m-adjust-saturation">Saturación</label><div class="soft-range-line"><input data-adjust="saturation" id="m-adjust-saturation" max="200" min="0" step="1" type="range" value="100"/><output for="m-adjust-saturation">100%</output></div></div></div><button class="btn primary soft-apply-look" data-ar="تطبيق المظهر" data-en="Apply look" data-es="Aplicar aspecto" disabled="" type="button">Aplicar aspecto</button></div></div>
+<!-- Mobile Action Row (✕ Cancel | Title | ✓ Apply) -->
+<div class="mobile-action-bar">
+<button aria-label="Cancel or deselect" class="m-circle-btn cancel" id="mobileCancelBtn" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="18"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>
+</button>
+<span class="m-tool-title" id="mobileToolTitle">Crop</span>
+<button aria-label="Aplicar acción" class="m-circle-btn apply" data-ar-label="تطبيق الإجراء" data-en-label="Apply action" data-es-label="Aplicar acción" id="mobileApplyBtn" type="button">
+<svg fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="18"><polyline points="20 6 9 17 4 12"></polyline></svg>
+</button>
+</div>
+<!-- Mobile Tool Dock Bar -->
+<nav aria-label="Mobile Navigation" class="mobile-dock">
+<button class="m-dock-btn active" data-m-tool="crop" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"></path><path d="M18 22V8a2 2 0 0 0-2-2H2"></path></svg>
+<span data-ar="قص" data-en="Crop" data-es="Recortar">Recortar</span>
+</button>
+<button class="m-dock-btn" data-m-tool="resize" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M4 14h6v6"></path><path d="M20 10h-6V4"></path><path d="m14 10 7-7"></path><path d="m3 21 7-7"></path></svg>
+<span data-ar="حجم" data-en="Adjust" data-es="Ajustar">Ajustar</span>
+</button><button class="m-dock-btn" data-m-tool="light" type="button"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M4 7h16M4 17h16"></path><circle cx="9" cy="7" fill="currentColor" r="3"></circle><circle cx="15" cy="17" fill="currentColor" r="3"></circle></svg><span data-ar="إضاءة" data-en="Light" data-es="Luz">Luz</span></button>
+<button class="m-dock-btn" data-m-tool="transform" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>
+<span data-ar="تدوير" data-en="Rotate" data-es="Girar">Girar</span>
+</button>
+<button class="m-dock-btn" data-m-tool="privacy" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9.5 12a2.5 2.5 0 1 1 5 0v3h-5z"></path></svg>
+<span data-ar="خصوصية" data-en="Privacy" data-es="Privacidad">Privacidad</span>
+</button>
+<button class="m-dock-btn" data-m-tool="presets" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><rect height="7" rx="1.5" width="7" x="3" y="3"></rect><rect height="7" rx="1.5" width="7" x="14" y="3"></rect><rect height="7" rx="1.5" width="7" x="3" y="14"></rect><rect height="7" rx="1.5" width="7" x="14" y="14"></rect></svg>
+<span data-ar="مقاسات" data-en="Presets" data-es="Formatos">Formatos</span>
+</button>
+<button class="m-dock-btn" data-m-tool="palette" type="button">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="13.5" cy="6.5" fill="currentColor" r=".5"></circle><circle cx="17.5" cy="10.5" fill="currentColor" r=".5"></circle><circle cx="8.5" cy="7.5" fill="currentColor" r=".5"></circle><circle cx="6.5" cy="12.5" fill="currentColor" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>
+<span data-ar="ألوان" data-en="Colors" data-es="Colores">Colores</span>
+</button>
+</nav>
+</div>
+</div>
+</main>
+<!-- Notice: Footer is removed completely as requested ("وازل الفوتر في هذا القسم") -->
+<script src="/assets/icons.js?v=9.2"></script><script src="/assets/core.js?v=9.2"></script><script src="/image/image.js?v=12.0"></script><script src="/assets/ux.js?v=9.2"></script><script src="/assets/custom-controls.js?v=9.2"></script>
+<noscript><nav aria-label="Idiomas" class="soft-language-links"><a href="/image/" hreflang="en" lang="en">English</a><a href="/ar/image/" hreflang="ar" lang="ar">العربية</a><a aria-current="page" href="/es/image/" hreflang="es" lang="es">Español</a></nav></noscript><script defer="" src="/assets/soft-refinements.js?v=20261007c"></script></body></html>

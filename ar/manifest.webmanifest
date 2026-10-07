@@ -3,7 +3,7 @@
   "name": "HozTools",
   "short_name": "HozTools",
   "description": "Images, PDF, text and everyday tools. Processed on your device.",
-  "start_url": "/",
+  "start_url": "/ar/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f4f8fa",
@@ -25,7 +25,7 @@
   "shortcuts": [
     {
       "name": "Image Lab",
-      "url": "/image/",
+      "url": "/ar/image/",
       "icons": [
         {
           "src": "/assets/app-icon-classic-clear-192.png",
@@ -36,7 +36,7 @@
     },
     {
       "name": "PDF Lab",
-      "url": "/pdf/",
+      "url": "/ar/pdf/",
       "icons": [
         {
           "src": "/assets/app-icon-classic-clear-192.png",
@@ -47,7 +47,7 @@
     },
     {
       "name": "Calculators",
-      "url": "/calculators/",
+      "url": "/ar/calculators/",
       "icons": [
         {
           "src": "/assets/app-icon-classic-clear-192.png",
@@ -57,6 +57,6 @@
       ]
     }
   ],
-  "lang": "en",
-  "dir": "ltr"
+  "lang": "ar",
+  "dir": "rtl"
 }
