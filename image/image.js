@@ -8,6 +8,8 @@
   let selectionUI = { show(){}, hide(){}, refresh(){}, afterCanvasChange(){} };
   let liveUI = { refresh(){}, announce(){} };
   let loadVersion = 0;
+  let history = [], future = [];
+  const historyBudget = 64 * 1024 * 1024;
 
   function t(en, ar, es){
     return { en, ar, es }[H.lang()] || en;
@@ -23,7 +25,7 @@
         b.disabled = !on;
       }
     });
-    if($('#undoBtn')) $('#undoBtn').disabled = !undo;
+    historyButtons();
     if($('#resetBtn')) $('#resetBtn').disabled = !on;
     if($('#quickExportBtn')) $('#quickExportBtn').disabled = !on;
     if($('#cropBtn')) $('#cropBtn').disabled = !on;
@@ -40,12 +42,28 @@
     $$('[data-transform]').forEach(b => b.disabled = !on);
   }
 
+  function historyButtons(){
+    undo = history.at(-1) || null;
+    if($('#undoBtn')) $('#undoBtn').disabled = !history.length;
+    if($('#redoBtn')) $('#redoBtn').disabled = !future.length;
+  }
+  function trimHistory(stack){
+    let size=stack.reduce((n,c)=>n+c.width*c.height*4,0);
+    while(stack.length>1 && (size>historyBudget || stack.length>16)){
+      const old=stack.shift();size-=old.width*old.height*4;old.width=old.height=0;
+    }
+  }
   function snapshot(){
-    undo = document.createElement('canvas');
-    undo.width = canvas.width;
-    undo.height = canvas.height;
-    undo.getContext('2d').drawImage(canvas, 0, 0);
-    if($('#undoBtn')) $('#undoBtn').disabled = false;
+    history.push(canvasCopy());future=[];trimHistory(history);historyButtons();
+  }
+  function restoreHistory(redo=false){
+    const from=redo?future:history,to=redo?history:future,next=from.pop();
+    if(!next)return;
+    to.push(canvasCopy());trimHistory(to);clearEffectState();resetAdjustments();
+    canvas.width=next.width;canvas.height=next.height;ctx.drawImage(next,0,0);
+    ratio=canvas.width/canvas.height;syncDims();syncCrop();renderMeta();extractPalette();
+    $('#status').textContent=`${canvas.width} × ${canvas.height}`;
+    updateZoomDisplay();selectionUI.afterCanvasChange();estimate();historyButtons();
   }
 
   function canvasCopy(source = canvas){
@@ -95,6 +113,7 @@
     $('#cropY').value = 0;
     $('#cropW').value = canvas.width;
     $('#cropH').value = canvas.height;
+    document.dispatchEvent(new Event('hoz:image-state'));
   }
 
   function selection(){
@@ -143,6 +162,7 @@
   }
 
   function drawImage(img){
+    resetAdjustments();
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.drawImage(img, 0, 0);
@@ -174,15 +194,14 @@
     const img = new Image();
     img.onload = () => {
       if(version !== loadVersion){ URL.revokeObjectURL(img.src); return; }
-      if(img.width * img.height > 24e6){
+      if(img.width * img.height > 24e6 || img.width>16384 || img.height>16384){
         URL.revokeObjectURL(img.src);
         return H.toast(t('Choose an image below 24 megapixels.', 'اختر صورة دون 24 ميجابكسل.', 'Elige una imagen inferior a 24 megapíxeles.'), 'error');
       }
       sourceName = H.basename(file.name);
       original = { file, img };
-      undo = null;
-      if($('#undoBtn')) $('#undoBtn').disabled = true;
-      drawImage(img);
+      history=[];future=[];undo=null;
+      drawImage(img);historyButtons();
       URL.revokeObjectURL(img.src);
     };
     img.onerror = () => {
@@ -213,13 +232,15 @@
   function resizeTo(w, h){
     if(!Number.isFinite(w) || !Number.isFinite(h) || w < 1 || h < 1 || w * h > 24e6 || w > 16384 || h > 16384){
       H.toast(t('Use positive dimensions below 24 megapixels (maximum side: 16384).', 'استخدم أبعادًا موجبة دون 24 ميجابكسل (أقصى ضلع: 16384).', 'Usa dimensiones positivas inferiores a 24 megapíxeles.'), 'error');
-      return;
+      return false;
     }
     const temp = document.createElement('canvas');
     temp.width = Math.max(1, Math.round(w));
     temp.height = Math.max(1, Math.round(h));
+    temp.getContext('2d').imageSmoothingQuality='high';
     temp.getContext('2d').drawImage(canvas, 0, 0, temp.width, temp.height);
     replaceWith(temp, 'resize');
+    return true;
   }
 
   function transform(type){
@@ -238,7 +259,7 @@
 
   function crop(){
     const s = selection();
-    if(s.w < 1 || s.h < 1) return;
+    if(s.w < 1 || s.h < 1) return false;
     const temp = document.createElement('canvas');
     temp.width = s.w;
     temp.height = s.h;
@@ -246,6 +267,7 @@
     replaceWith(temp, 'crop');
     selectionUI.hide();
     H.toast(t('Crop applied successfully.', 'تم تطبيق القص بنجاح.', 'Recorte aplicado con éxito.'));
+    return true;
   }
 
   function drawFeatherMask(maskCtx, w, h, feather){
@@ -371,6 +393,7 @@
   }
 
   function effect(kind){
+    snapshot();
     const base = canvasCopy(), sel = selection();
     effectBase = base;
     effectSelection = { ...sel };
@@ -378,7 +401,7 @@
     try {
       const applied = renderEffect(kind, true);
       if(!applied) throw Error(t('The effect could not be applied.', 'تعذر تطبيق التأثير.', 'No se pudo aplicar el efecto.'));
-      effectHistory.push(base);
+      effectHistory.push(true);
       const historyLimit = Math.max(1, Math.min(8, Math.floor(96 * 1024 * 1024 / (canvas.width * canvas.height * 4))));
       while(effectHistory.length > historyLimit) effectHistory.shift();
       updateUndoEffectState();
@@ -392,24 +415,7 @@
     }
   }
 
-  function undoLastEffect(){
-    const prev = effectHistory.pop();
-    if(!prev) return;
-    canvas.width = prev.width;
-    canvas.height = prev.height;
-    ctx.drawImage(prev, 0, 0);
-    stopLiveEffect();
-    updateUndoEffectState();
-    undo = null;
-    if($('#undoBtn')) $('#undoBtn').disabled = true;
-    ratio = canvas.width / canvas.height;
-    syncDims();
-    renderMeta();
-    extractPalette();
-    selectionUI.show();
-    selectionUI.refresh();
-    estimate();
-  }
+  function undoLastEffect(){restoreHistory(false);}
 
   function queueEffectPreview(){
     if(!activeEffect || !effectBase) return;
@@ -425,15 +431,15 @@
   }
 
   async function outputBlob(){
-    let w = Number($('#width').value), h = Number($('#height').value), temp = canvas;
+    let w = Number($('#width').value), h = Number($('#height').value), temp = adjustmentCanvas();
     if(!Number.isSafeInteger(w) || !Number.isSafeInteger(h) || w < 1 || h < 1 || w > 16384 || h > 16384 || w * h > 24e6){
       throw Error(t('Check export dimensions.', 'راجع أبعاد التصدير.', 'Revisa las dimensiones.'));
     }
     if(w !== canvas.width || h !== canvas.height){
-      temp = document.createElement('canvas');
+      const adjusted=temp;temp = document.createElement('canvas');
       temp.width = w; temp.height = h;
       temp.getContext('2d').imageSmoothingQuality = 'high';
-      temp.getContext('2d').drawImage(canvas, 0, 0, w, h);
+      temp.getContext('2d').drawImage(adjusted, 0, 0, w, h);
     }
     const type = $('#format').value;
     if(type === 'image/jpeg'){
@@ -521,7 +527,7 @@
         const h = Math.round(canvas.height * 0.85);
         const x = Math.round((canvas.width - w) / 2);
         const y = Math.round((canvas.height - h) / 2);
-        $('#cropX').value = x; $('#cropY').value = y; $('#cropW').value = w; $('#cropH').value = h;
+        $('#cropX').value = x; $('#cropY').value = y; $('#cropW').value = w; $('#cropH').value = h;document.dispatchEvent(new Event('hoz:image-state'));
       }
       selectionUI.show();
       selectionUI.refresh();
@@ -537,21 +543,48 @@
     let w, h;
     const cw = canvas.width, ch = canvas.height;
     if(cw / ch > targetRatio){
-      h = Math.round(ch * 0.85);
+      h = ch;
       w = Math.round(h * targetRatio);
     } else {
-      w = Math.round(cw * 0.85);
+      w = cw;
       h = Math.round(w / targetRatio);
     }
     const x = Math.round((cw - w) / 2);
     const y = Math.round((ch - h) / 2);
-    $('#cropX').value = x; $('#cropY').value = y; $('#cropW').value = w; $('#cropH').value = h;
+    $('#cropX').value = x; $('#cropY').value = y; $('#cropW').value = w; $('#cropH').value = h;document.dispatchEvent(new Event('hoz:image-state'));
     selectionUI.show();
     selectionUI.refresh();
   }
 
+  const adjustments={brightness:100,contrast:100,saturation:100};
+  function resetAdjustments(){
+    Object.keys(adjustments).forEach(k=>adjustments[k]=100);
+    canvas.style.filter='none';
+    $$('[data-adjust]').forEach(el=>{el.value=100;el.parentElement.querySelector('output').textContent='100%'});
+    $$('[data-look]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look==='natural')));
+  }
+  function adjustmentCanvas(){
+    if(Object.values(adjustments).every(x=>x===100))return canvas;
+    const copy=canvasCopy(),cx=copy.getContext('2d'),data=cx.getImageData(0,0,copy.width,copy.height),pixels=data.data;
+    const brightness=adjustments.brightness/100,contrast=adjustments.contrast/100,saturation=adjustments.saturation/100;
+    for(let i=0;i<pixels.length;i+=4){
+      const r=Math.min(255,Math.max(0,(pixels[i]*brightness-127.5)*contrast+127.5)),g=Math.min(255,Math.max(0,(pixels[i+1]*brightness-127.5)*contrast+127.5)),b=Math.min(255,Math.max(0,(pixels[i+2]*brightness-127.5)*contrast+127.5)),gray=.213*r+.715*g+.072*b;
+      pixels[i]=gray+(r-gray)*saturation;pixels[i+1]=gray+(g-gray)*saturation;pixels[i+2]=gray+(b-gray)*saturation;
+    }
+    cx.putImageData(data,0,0);return copy;
+  }
+  function previewAdjustments(){
+    canvas.style.filter=`brightness(${adjustments.brightness}%) contrast(${adjustments.contrast}%) saturate(${adjustments.saturation}%)`;
+    $$('[data-adjust]').forEach(el=>{el.value=adjustments[el.dataset.adjust];el.parentElement.querySelector('output').textContent=el.value+'%'});
+    estimate();
+  }
+  $$('[data-adjust]').forEach(input=>input.addEventListener('input',()=>{adjustments[input.dataset.adjust]=clamp(Number(input.value),0,200);previewAdjustments()}));
+  $$('[data-look]').forEach(button=>button.onclick=()=>{const looks={natural:[100,100,100],vivid:[104,112,125],mono:[100,105,0],soft:[106,90,88]},values=looks[button.dataset.look];Object.keys(adjustments).forEach((k,i)=>adjustments[k]=values[i]);$$('[data-look]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look===button.dataset.look)));previewAdjustments()});
+  $$('.soft-apply-look').forEach(button=>button.onclick=()=>H.busy(button,()=>{if(Object.values(adjustments).every(x=>x===100))return;const next=adjustmentCanvas();resetAdjustments();replaceWith(next,'light');H.toast(t('Look applied. Undo is available.','تم تطبيق المظهر. يمكنك التراجع.','Aspecto aplicado. Puedes deshacerlo.'))}));
+
   // Unified Tool Switcher
   const toolTitles = {
+    light:{en:'Light & Color',ar:'الإضاءة والألوان',es:'Luz y color'},
     crop: { en: 'Crop & Frame', ar: 'القص والإطار', es: 'Recortar y marco' },
     resize: { en: 'Adjust & Resize', ar: 'الحجم والضغط', es: 'Ajustar y redimensionar' },
     transform: { en: 'Rotate & Flip', ar: 'التدوير والانعكاس', es: 'Girar y reflejar' },
@@ -561,6 +594,7 @@
   };
 
   const toolSubs = {
+    light:{en:'Preview a look, then apply it',ar:'عاين المظهر ثم طبّقه',es:'Previsualiza y aplica el aspecto'},
     crop: { en: 'Select an aspect ratio or drag crop handles', ar: 'اختر نسبة الأبعاد أو اسحب مقابض التحديد', es: 'Elige proporción o arrastra tiradores' },
     resize: { en: 'Adjust pixel dimensions and compression', ar: 'تحكم بأبعاد البكسل وجودة الضغط', es: 'Ajusta dimensiones y compresión' },
     transform: { en: 'Rotate in 90° steps or mirror horizontally/vertically', ar: 'تدوير بدرجة 90 أو انعكاس أفقي وعمودي', es: 'Gira 90° o refleja la imagen' },
@@ -570,16 +604,18 @@
   };
 
   function setTool(toolName){
+    if(currentTool==='light'&&toolName!=='light'){resetAdjustments();estimate()}
     currentTool = toolName;
+    if($('.mobile-shelves-wrap'))$('.mobile-shelves-wrap').scrollTop=0;
 
     // 1. Update Rail Buttons (Desktop)
     $$('.rail-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.tool === toolName);
+      b.classList.toggle('active', b.dataset.tool === toolName);b.setAttribute('aria-pressed',String(b.dataset.tool === toolName));
     });
 
     // 2. Update Dock Buttons (Mobile)
     $$('.m-dock-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.mTool === toolName);
+      b.classList.toggle('active', b.dataset.mTool === toolName);b.setAttribute('aria-pressed',String(b.dataset.mTool === toolName));
     });
 
     // 3. Update Drawer Content (Desktop)
@@ -591,7 +627,7 @@
 
     // 4. Update Mobile Dedicated Shelves
     $$('.mobile-shelf').forEach(s => {
-      s.classList.toggle('active', s.dataset.mShelf === toolName);
+      s.classList.toggle('active', s.dataset.mShelf === toolName);s.hidden=s.dataset.mShelf!==toolName;
     });
 
     const info = toolTitles[toolName] || toolTitles.crop;
@@ -624,7 +660,11 @@
     }
 
     // 5. Selection overlay (crop & privacy)
+    if(toolName!=='privacy')stopLiveEffect();
     selecting = (toolName === 'crop' || toolName === 'privacy');
+    const actionable=['crop','resize','privacy','presets','light'].includes(toolName);
+    if($('#mobileApplyBtn'))$('#mobileApplyBtn').hidden=!actionable;
+    if($('.mobile-action-bar'))$('.mobile-action-bar').hidden=!actionable;
     canvas.parentElement?.classList.toggle('selecting', selecting);
     if(selecting){
       selectionUI.show();
@@ -632,6 +672,15 @@
     } else {
       selectionUI.hide();
     }
+  }
+
+  function collapseMobileActions(){
+    if(window.innerWidth>900)return;
+    const actionBar=$('.mobile-action-bar'),shelves=$('.mobile-shelves-wrap'),toggle=$('.soft-sheet-toggle');
+    if(actionBar)actionBar.hidden=true;
+    if(shelves)shelves.hidden=true;
+    if(toggle)toggle.setAttribute('aria-expanded','false');
+    window.dispatchEvent(new Event('resize'));
   }
 
   // Zoom Handling — zoom is relative to the fitted canvas, never raw megapixels.
@@ -670,6 +719,8 @@
     }
     selectionUI.refresh();
   }
+
+  if('ResizeObserver' in window)new ResizeObserver(()=>{if(original)updateZoomDisplay()}).observe($('#studioStage'));
 
   // Attach basic listeners
   H.enhanceDrop($('#dropzone'), load);
@@ -770,34 +821,20 @@
   $('#mApplyPreset')?.addEventListener('click', applyPresetCrop);
   $('#mFaviconBtn')?.addEventListener('click', favicon);
 
-  // History Actions
+  // Undoable reset, multi-step undo and redo; bounded by canvas memory.
   $('#resetBtn').onclick = () => {
-    if(!original) return;
-    drawImage(original.img);
-    undo = null;
-    if($('#undoBtn')) $('#undoBtn').disabled = true;
-    H.toast(t('Reset to original image.', 'تمت استعادة الصورة الأصلية.', 'Restablecido al original.'));
+    if(!original)return;
+    snapshot();drawImage(original.img);historyButtons();
+    H.toast(t('Original restored. You can undo this.', 'تمت استعادة الأصل. يمكنك التراجع.', 'Original restaurado. Puedes deshacerlo.'));
   };
-
-  $('#undoBtn').onclick = () => {
-    if(!undo) return;
-    canvas.width = undo.width;
-    canvas.height = undo.height;
-    ctx.drawImage(undo, 0, 0);
-    undo = null;
-    $('#undoBtn').disabled = true;
-    clearEffectState();
-    ratio = canvas.width / canvas.height;
-    syncDims();
-    syncCrop();
-    renderMeta();
-    extractPalette();
-    $('#status').textContent = `${canvas.width} × ${canvas.height}`;
-    selectionUI.afterCanvasChange();
-    if(currentTool === 'crop') applyRatio('free');
-    estimate();
-    H.toast(t('Undone.', 'تم التراجع.', 'Deshecho.'));
-  };
+  $('#undoBtn').onclick=()=>restoreHistory(false);
+  $('#redoBtn').onclick=()=>restoreHistory(true);
+  document.addEventListener('keydown',e=>{
+    if(!(e.ctrlKey||e.metaKey)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.target.isContentEditable)return;
+    if(e.key.toLowerCase()==='z'){e.preventDefault();restoreHistory(e.shiftKey)}
+    else if(e.key.toLowerCase()==='y'){e.preventDefault();restoreHistory(true)}
+  });
+  window.HozImageExport=exportImage;
 
   $('#changeImage').onclick = () => $('#imageInput').click();
 
@@ -818,16 +855,20 @@
 
   // Mobile Action Bar
   $('#mobileApplyBtn').onclick = () => {
+    let applied=true;
     if(currentTool === 'crop'){
-      crop();
+      applied=crop();
     } else if(currentTool === 'resize'){
-      const w = +$('#mWidth').value || +$('#width').value;
-      const h = +$('#mHeight').value || +$('#height').value;
+      const w = Number($('#mWidth').value);
+      const h = Number($('#mHeight').value);
       if(w !== canvas.width || h !== canvas.height){
-        resizeTo(w, h);
+        applied=resizeTo(w, h);
       } else {
-        exportImage();
+        H.toast(t('Dimensions are unchanged.', 'الأبعاد لم تتغير.', 'Las dimensiones no han cambiado.'));
+        applied=false;
       }
+    } else if(currentTool === 'light'){
+      $('.soft-apply-look').click();
     } else if(currentTool === 'privacy'){
       effect('blur');
     } else if(currentTool === 'presets'){
@@ -835,12 +876,18 @@
     } else {
       H.toast(t('Changes applied.', 'تم التطبيق.', 'Aplicado.'));
     }
+    if(applied)collapseMobileActions();
   };
 
   $('#mobileCancelBtn').onclick = () => {
-    setTool('crop');
+    if(currentTool==='light')resetAdjustments();
+    stopLiveEffect();
     selectionUI.hide();
+    collapseMobileActions();
   };
+  $$('#mobileControls [data-transform],#mBlurBtn,#mPixelBtn,#mApplyPreset,#mFaviconBtn,.soft-apply-look').forEach(button=>{
+    button.addEventListener('click',()=>queueMicrotask(collapseMobileActions));
+  });
 
   // Desktop Drawer collapse/expand button
   $('#drawerToggleBtn').onclick = () => {
@@ -874,7 +921,7 @@
 
   // Canvas Color Picker
   canvas.addEventListener('click', e => {
-    if(selecting) return;
+    if(selecting || currentTool !== 'palette') return;
     const r = canvas.getBoundingClientRect();
     const x = clamp(Math.floor((e.clientX - r.left) * canvas.width / r.width), 0, canvas.width - 1);
     const y = clamp(Math.floor((e.clientY - r.top) * canvas.height / r.height), 0, canvas.height - 1);

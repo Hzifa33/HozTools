@@ -70,7 +70,7 @@
     [...root.children].forEach((item,i)=>{const radio=item.firstElementChild,text=item.lastElementChild,label=optionLabel(options[i]);radio.checked=options[i].selected;radio.disabled=select.disabled||optionDisabled(options[i]);if(text.textContent!==label)text.textContent=label});
   }
   function enhanceSelect(select){
-    if(selectStates.has(select))return;select.id||='select-'+H.uid();
+    if(selectStates.has(select)||select.hasAttribute('data-native-select')||select.closest('dialog'))return;select.id||='select-'+H.uid();
     const root=document.createElement('div');root.className='segment-picker';root.setAttribute('role','group');select.after(root);
     const button=document.createElement('button');button.type='button';button.id=select.id+'-control';button.className='neo-select-button';button.setAttribute('aria-haspopup','listbox');button.setAttribute('aria-expanded','false');
     const value=document.createElement('span');value.className='neo-select-value';value.id=button.id+'-value';

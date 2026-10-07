@@ -983,7 +983,7 @@ body.image-tool .preview-box canvas {
   z-index: 4;
   border: 2px dashed #111827;
   outline: 1px solid rgba(255, 255, 255, 0.95);
-  background: rgba(255, 230, 0, 0.12);
+  background: rgba(142, 215, 243, 0.12);
   box-shadow: none !important;
   pointer-events: auto;
   touch-action: none;

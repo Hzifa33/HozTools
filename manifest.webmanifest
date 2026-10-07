@@ -1,1 +1,62 @@
-{"id":"/","name":"Hoztools","short_name":"Hoztools","description":"Images, PDF, text and everyday tools. Processed on your device.","start_url":"/","scope":"/","display":"standalone","background_color":"#FBF9F5","theme_color":"#FFE600","icons":[{"src":"assets/app-site-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"assets/app-site-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}],"shortcuts":[{"name":"Image Lab","url":"/image/"},{"name":"PDF Lab","url":"/pdf/"},{"name":"Calculators","url":"/calculators/"}]}
+{
+  "id": "/",
+  "name": "HozTools",
+  "short_name": "HozTools",
+  "description": "Images, PDF, text and everyday tools. Processed on your device.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f8fa",
+  "theme_color": "#8ed7f3",
+  "icons": [
+    {
+      "src": "/assets/app-icon-classic-clear-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/app-icon-classic-clear-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Image Lab",
+      "url": "/image/",
+      "icons": [
+        {
+          "src": "/assets/app-icon-classic-clear-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "PDF Lab",
+      "url": "/pdf/",
+      "icons": [
+        {
+          "src": "/assets/app-icon-classic-clear-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Calculators",
+      "url": "/calculators/",
+      "icons": [
+        {
+          "src": "/assets/app-icon-classic-clear-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "lang": "en",
+  "dir": "ltr"
+}
